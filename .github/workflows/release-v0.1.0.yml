@@ -33,15 +33,27 @@ jobs:
           npm run check
           npm audit --omit=dev
 
-      - name: Create v0.1.0 release once
+      - name: Create or verify v0.1.0 release
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
+          release_notes=$(cat <<'EOF'
+          Project Glassbox v0.1.0 is the first public research-prototype release of open infrastructure for observable, verifiable, human-governed AI.
+
+          Highlights include the interactive Context Microscope, LLM/deterministic/hybrid Agent Layer, evidence provenance, deterministic replay, human-review controls, audit export, and explicit epistemic safety boundaries.
+
+          Project Glassbox does not expose private chain-of-thought, translate neural activity into literal thoughts, or fabricate missing context, evidence, telemetry, or certainty. It is not a production assurance or compliance system.
+
+          See CHANGELOG.md for the complete release summary.
+          EOF
+          )
           if gh release view v0.1.0 >/dev/null 2>&1; then
-            echo "Release v0.1.0 already exists; no action required."
-            exit 0
+            gh release edit v0.1.0 \
+              --title "Project Glassbox v0.1.0" \
+              --notes "$release_notes"
+          else
+            gh release create v0.1.0 \
+              --target "$GITHUB_SHA" \
+              --title "Project Glassbox v0.1.0" \
+              --notes "$release_notes"
           fi
-          gh release create v0.1.0 \
-            --target "$GITHUB_SHA" \
-            --title "Project Glassbox v0.1.0" \
-            --notes "First public release of Project Glassbox: open infrastructure for observable, verifiable, human-governed AI. Includes the interactive Context Microscope, LLM/deterministic/hybrid Agent Layer, evidence provenance, deterministic replay, human-review controls, audit export, and explicit epistemic safety boundaries."

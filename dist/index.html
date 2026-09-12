@@ -4,9 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#070b14" />
-  <meta name="description" content="Glassbox is an interactive AI observability workspace for inspecting evidence, provenance, uncertainty, and human review." />
+  <meta name="description" content="Glassbox is a real-time Context Microscope for inspecting multi-model context, evidence, telemetry, synthesis, provenance, and human review." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M18 17h28v30H18z' fill='none' stroke='%2379f2d0' stroke-width='4'/%3E%3Cpath d='M22 40l9-10 7 6 6-10' fill='none' stroke='%238c7cff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='44' cy='26' r='3' fill='%23ffca6b'/%3E%3C/svg%3E" />
-  <title>Glassbox — AI Evidence Observatory</title>
+  <title>Glassbox — AI Context Microscope</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
@@ -49,7 +49,7 @@
 
     <div class="truth-banner" role="note">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.8 6v5.5c0 4.6 3.5 8.3 8.2 9.5 4.7-1.2 8.2-4.9 8.2-9.5V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.7-5"/></svg>
-      <p><strong>Observable trace, not private thoughts.</strong> Glassbox displays inputs, tools, evidence, concise reasoning summaries, and review history. This session uses clearly labeled synthetic demonstration data.</p>
+      <p><strong>Observable trace, not private thoughts.</strong> Glassbox shows instrumented context, tools, evidence, telemetry, and concise reasoning summaries. Private chain-of-thought stays restricted; neural signals are never presented as literal thoughts. This session uses synthetic demonstration data.</p>
       <button id="dismissBanner" type="button" aria-label="Dismiss notice">×</button>
     </div>
 
@@ -103,19 +103,42 @@
       <section class="panel graph-panel" aria-labelledby="graphTitle">
         <div class="panel-heading graph-heading">
           <div>
-            <span class="eyebrow">Evolving visual scene</span>
-            <h2 id="graphTitle">Evidence constellation</h2>
+            <span class="eyebrow">Real-time context microscope</span>
+            <h2 id="graphTitle">Model lanes</h2>
           </div>
           <div class="graph-tools">
-            <div class="legend" aria-label="Graph legend">
-              <span><i class="legend-dot evidence"></i>Evidence</span>
-              <span><i class="legend-dot inference"></i>Inference</span>
-              <span><i class="legend-dot uncertainty"></i>Uncertainty</span>
-              <span><i class="legend-dot decision"></i>Decision</span>
+            <div class="canvas-mode-switch" role="group" aria-label="Canvas mode">
+              <button id="microscopeMode" class="active" type="button" aria-pressed="true">Microscope</button>
+              <button id="synthesisMode" type="button" aria-pressed="false">Synthesis</button>
             </div>
-            <button id="fitGraph" class="icon-button" type="button" title="Reset graph view" aria-label="Reset graph view">
+            <button id="zoomOut" class="icon-button" type="button" title="Zoom out" aria-label="Zoom out">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h12"/></svg>
+            </button>
+            <span id="zoomValue" class="zoom-value">100%</span>
+            <button id="zoomIn" class="icon-button" type="button" title="Zoom in" aria-label="Zoom in">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>
+            </button>
+            <button id="fitGraph" class="icon-button" type="button" title="Reset canvas view" aria-label="Reset canvas view">
               <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
             </button>
+          </div>
+        </div>
+
+        <div class="microscope-toolbar">
+          <div class="granularity-readout">
+            <span>Granularity</span>
+            <strong id="granularityTitle">Model level</strong>
+            <small id="granularityDescription">Who is working, what each model received, and what it contributed.</small>
+          </div>
+          <div class="granularity-control">
+            <input id="granularityRange" type="range" min="1" max="5" value="2" step="1" aria-label="Context granularity" />
+            <div class="granularity-stops" aria-hidden="true">
+              <span>System</span><span>Models</span><span>Reasoning</span><span>Evidence</span><span>Telemetry</span>
+            </div>
+          </div>
+          <div class="boundary-status" title="Protected internal reasoning is intentionally not exposed">
+            <span class="boundary-lock" aria-hidden="true">⌁</span>
+            <span><strong>Thought boundary</strong> Restricted</span>
           </div>
         </div>
 
@@ -131,8 +154,12 @@
           <span id="integrityChip" class="integrity-chip"><span></span> Integrity checks pending</span>
         </div>
 
-        <div id="graphStage" class="graph-stage" tabindex="0" aria-label="Interactive evidence graph. Select a node to inspect it.">
-          <svg id="evidenceGraph" viewBox="0 0 920 600" role="img" aria-labelledby="graphSvgTitle graphSvgDesc">
+        <div id="graphStage" class="graph-stage" tabindex="0" data-hint="SELECT A MODEL TO INSPECT" aria-label="Interactive context microscope. Select any visible item to inspect it.">
+          <div id="canvasTransform" class="canvas-transform">
+            <div id="systemView" class="microscope-view system-view" hidden></div>
+            <div id="agentLanesView" class="microscope-view agent-lanes-view"></div>
+
+            <svg id="evidenceGraph" class="microscope-view" viewBox="0 0 920 600" role="img" aria-labelledby="graphSvgTitle graphSvgDesc" hidden>
             <title id="graphSvgTitle">Observable AI evidence graph</title>
             <desc id="graphSvgDesc">A developing map connecting the question, evidence, assumptions, inferences, uncertainty, and conclusion.</desc>
             <defs>
@@ -152,7 +179,12 @@
             <rect width="920" height="600" fill="url(#microGrid)" />
             <g id="edgeLayer"></g>
             <g id="nodeLayer"></g>
-          </svg>
+            </svg>
+
+            <div id="contextMapView" class="microscope-view context-map-view" hidden></div>
+            <div id="telemetryView" class="microscope-view telemetry-view" hidden></div>
+            <div id="synthesisView" class="microscope-view synthesis-view" hidden></div>
+          </div>
 
           <div id="graphLoading" class="graph-state-overlay" hidden>
             <span class="loader-rings" aria-hidden="true"></span>
@@ -185,7 +217,7 @@
       <aside class="panel inspector-panel" aria-labelledby="inspectorTitle">
         <div class="panel-heading inspector-heading">
           <div>
-            <span class="eyebrow">Evidence inspector</span>
+            <span class="eyebrow">Context inspector</span>
             <h2 id="inspectorTitle">Select an item</h2>
           </div>
           <span id="selectedStatus" class="status-pill unknown">UNKNOWN</span>
@@ -209,6 +241,11 @@
             </div>
             <p id="itemSummary" class="item-summary"></p>
 
+            <div class="origin-grid">
+              <div><span>Produced by</span><strong id="itemAgent">—</strong></div>
+              <div><span>Record kind</span><strong id="itemRecordKind">—</strong></div>
+            </div>
+
             <div class="confidence-block">
               <div><span>Confidence</span><strong id="confidenceValue">—</strong></div>
               <div class="confidence-track"><span id="confidenceBar"></span></div>
@@ -216,9 +253,12 @@
             </div>
 
             <dl class="provenance-list">
+              <div><dt>Context used</dt><dd id="itemContext"></dd></div>
               <div><dt>Source</dt><dd id="itemSource"></dd></div>
               <div><dt>Verification</dt><dd id="itemVerification"></dd></div>
               <div><dt>Transformation</dt><dd id="itemTransform"></dd></div>
+              <div><dt>Relationships</dt><dd id="itemRelationship"></dd></div>
+              <div><dt>Unavailable or restricted</dt><dd id="itemUnavailable"></dd></div>
             </dl>
 
             <div class="excerpt-block">

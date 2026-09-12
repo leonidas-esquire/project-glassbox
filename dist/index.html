@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#070b14" />
+  <meta name="description" content="Glassbox is an interactive AI observability workspace for inspecting evidence, provenance, uncertainty, and human review." />
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M18 17h28v30H18z' fill='none' stroke='%2379f2d0' stroke-width='4'/%3E%3Cpath d='M22 40l9-10 7 6 6-10' fill='none' stroke='%238c7cff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='44' cy='26' r='3' fill='%23ffca6b'/%3E%3C/svg%3E" />
+  <title>Glassbox — AI Evidence Observatory</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <a class="brand" href="#" aria-label="Glassbox home">
+        <span class="brand-mark" aria-hidden="true">
+          <svg viewBox="0 0 32 32"><path d="M7 6.5h18v19H7z"/><path d="m9.8 21 5.5-6 4.1 3.3 3.2-6.2"/><circle cx="22.6" cy="12.1" r="1.5"/></svg>
+        </span>
+        <span>GLASSBOX</span>
+      </a>
+
+      <div class="session-meta" aria-label="Session status">
+        <span class="pulse-dot" aria-hidden="true"></span>
+        <span id="sessionState">Ready to observe</span>
+        <span class="divider"></span>
+        <span>Trace <strong>GBX–042</strong></span>
+      </div>
+
+      <div class="top-actions">
+        <label class="state-select-label" for="stateSelector">State lab</label>
+        <select id="stateSelector" class="compact-select" aria-label="Preview a system state">
+          <option value="live">Live demo</option>
+          <option value="loading">Loading</option>
+          <option value="error">Tool error</option>
+          <option value="unavailable">Evidence unavailable</option>
+          <option value="conflict">Conflicting evidence</option>
+          <option value="redacted">Privacy redaction</option>
+        </select>
+        <button id="compareButton" class="button button-quiet" type="button" aria-pressed="false">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5H4v14h4M16 5h4v14h-4M9 9l3-3 3 3M12 6v12M15 15l-3 3-3-3"/></svg>
+          Compare
+        </button>
+        <button id="exportButton" class="button button-quiet" type="button">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m0 0 4-4m-4 4-4-4M5 17v3h14v-3"/></svg>
+          Export audit
+        </button>
+      </div>
+    </header>
+
+    <div class="truth-banner" role="note">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.8 6v5.5c0 4.6 3.5 8.3 8.2 9.5 4.7-1.2 8.2-4.9 8.2-9.5V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.7-5"/></svg>
+      <p><strong>Observable trace, not private thoughts.</strong> Glassbox displays inputs, tools, evidence, concise reasoning summaries, and review history. This session uses clearly labeled synthetic demonstration data.</p>
+      <button id="dismissBanner" type="button" aria-label="Dismiss notice">×</button>
+    </div>
+
+    <main class="workspace">
+      <aside class="left-column" aria-label="Question and live explanation">
+        <section class="panel query-panel">
+          <div class="panel-heading compact-heading">
+            <div>
+              <span class="eyebrow">Input</span>
+              <h1>What should the AI evaluate?</h1>
+            </div>
+            <span class="demo-pill">SIMULATED</span>
+          </div>
+          <label class="sr-only" for="questionInput">Question for the demonstration</label>
+          <textarea id="questionInput" rows="4">Should the city deploy AI-assisted pothole triage across all districts?</textarea>
+          <label class="source-field" for="sourceInput">
+            <span>Optional source</span>
+            <input id="sourceInput" type="url" placeholder="Paste a public source URL" />
+          </label>
+          <div id="attachmentList" class="attachment-list" aria-live="polite"></div>
+          <div class="query-actions">
+            <input id="fileInput" type="file" accept=".txt,.csv,.json,.pdf" multiple hidden />
+            <button id="attachButton" class="button button-quiet" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 12.5 6.7-6.7a3 3 0 0 1 4.2 4.2l-8.2 8.2a5 5 0 0 1-7.1-7.1l8.1-8.1"/></svg>
+              Attach
+            </button>
+            <button id="runButton" class="button button-primary" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 8 6-8 6V6Z"/></svg>
+              Run observable trace
+            </button>
+          </div>
+        </section>
+
+        <section class="panel narration-panel">
+          <div class="panel-heading">
+            <div>
+              <span class="eyebrow">Live explanation</span>
+              <h2 id="narrationTitle">Waiting for a trace</h2>
+            </div>
+            <span id="streamBadge" class="stream-badge idle"><span></span> IDLE</span>
+          </div>
+          <div id="narrationList" class="narration-list" aria-live="polite">
+            <div class="empty-state">
+              <span class="empty-orbit" aria-hidden="true"></span>
+              <p>Run the demonstration to watch observable evidence become an inspectable answer.</p>
+            </div>
+          </div>
+        </section>
+      </aside>
+
+      <section class="panel graph-panel" aria-labelledby="graphTitle">
+        <div class="panel-heading graph-heading">
+          <div>
+            <span class="eyebrow">Evolving visual scene</span>
+            <h2 id="graphTitle">Evidence constellation</h2>
+          </div>
+          <div class="graph-tools">
+            <div class="legend" aria-label="Graph legend">
+              <span><i class="legend-dot evidence"></i>Evidence</span>
+              <span><i class="legend-dot inference"></i>Inference</span>
+              <span><i class="legend-dot uncertainty"></i>Uncertainty</span>
+              <span><i class="legend-dot decision"></i>Decision</span>
+            </div>
+            <button id="fitGraph" class="icon-button" type="button" title="Reset graph view" aria-label="Reset graph view">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M16 21h5v-5"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="alertRail" class="alert-rail" aria-live="polite">
+          <button class="alert-chip warning" type="button" data-select="n7">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2.8 20h18.4L12 3Z"/><path d="M12 9v5m0 3h.01"/></svg>
+            1 unresolved uncertainty
+          </button>
+          <button class="alert-chip conflict" type="button" data-select="n6">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m7 7 10 10M17 7 7 17"/></svg>
+            1 evidence conflict
+          </button>
+          <span id="integrityChip" class="integrity-chip"><span></span> Integrity checks pending</span>
+        </div>
+
+        <div id="graphStage" class="graph-stage" tabindex="0" aria-label="Interactive evidence graph. Select a node to inspect it.">
+          <svg id="evidenceGraph" viewBox="0 0 920 600" role="img" aria-labelledby="graphSvgTitle graphSvgDesc">
+            <title id="graphSvgTitle">Observable AI evidence graph</title>
+            <desc id="graphSvgDesc">A developing map connecting the question, evidence, assumptions, inferences, uncertainty, and conclusion.</desc>
+            <defs>
+              <pattern id="microGrid" width="24" height="24" patternUnits="userSpaceOnUse">
+                <path d="M24 0H0V24" fill="none" stroke="rgba(132,151,186,.08)" stroke-width="1"/>
+              </pattern>
+              <filter id="nodeGlow" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="5" result="blur"/>
+                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+              </filter>
+              <linearGradient id="activeEdge" x1="0" x2="1">
+                <stop offset="0" stop-color="#79f2d0" stop-opacity=".2"/>
+                <stop offset=".5" stop-color="#79f2d0"/>
+                <stop offset="1" stop-color="#8c7cff" stop-opacity=".3"/>
+              </linearGradient>
+            </defs>
+            <rect width="920" height="600" fill="url(#microGrid)" />
+            <g id="edgeLayer"></g>
+            <g id="nodeLayer"></g>
+          </svg>
+
+          <div id="graphLoading" class="graph-state-overlay" hidden>
+            <span class="loader-rings" aria-hidden="true"></span>
+            <strong>Preparing observable trace</strong>
+            <span>Checking source permissions and initializing the event stream…</span>
+          </div>
+          <div id="graphError" class="graph-state-overlay error-overlay" hidden>
+            <span class="error-symbol" aria-hidden="true">!</span>
+            <strong>Tool connection interrupted</strong>
+            <span>No evidence was invented. Retry the demonstration or inspect the recorded error.</span>
+            <button id="retryButton" class="button button-primary" type="button">Retry trace</button>
+          </div>
+        </div>
+
+        <div id="comparisonStrip" class="comparison-strip" hidden>
+          <button class="comparison-card selected" type="button" data-select="n8">
+            <span class="trace-label">TRACE A · EVIDENCE-WEIGHTED</span>
+            <strong>Recommend a controlled two-district pilot</strong>
+            <span>Confidence 78% · 7 evidence links</span>
+          </button>
+          <div class="versus">VS</div>
+          <button class="comparison-card alternate" type="button" data-select="alt1">
+            <span class="trace-label">TRACE B · SPEED-WEIGHTED</span>
+            <strong>Recommend immediate citywide deployment</strong>
+            <span>Confidence 52% · 4 evidence links</span>
+          </button>
+        </div>
+      </section>
+
+      <aside class="panel inspector-panel" aria-labelledby="inspectorTitle">
+        <div class="panel-heading inspector-heading">
+          <div>
+            <span class="eyebrow">Evidence inspector</span>
+            <h2 id="inspectorTitle">Select an item</h2>
+          </div>
+          <span id="selectedStatus" class="status-pill unknown">UNKNOWN</span>
+        </div>
+
+        <div class="inspector-tabs" role="tablist" aria-label="Inspector views">
+          <button id="evidenceTab" role="tab" aria-selected="true" aria-controls="evidencePane" type="button">Evidence</button>
+          <button id="historyTab" role="tab" aria-selected="false" aria-controls="historyPane" type="button">History</button>
+          <button id="reviewTab" role="tab" aria-selected="false" aria-controls="reviewPane" type="button">Review <span id="reviewCount">0</span></button>
+        </div>
+
+        <div id="evidencePane" class="inspector-pane" role="tabpanel" aria-labelledby="evidenceTab">
+          <div id="inspectorEmpty" class="inspector-empty">
+            <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="m30 30 9 9M17 18h8M17 23h5"/></svg>
+            <p>Choose a narration card or graph node to inspect its provenance.</p>
+          </div>
+          <div id="inspectorContent" hidden>
+            <div class="type-row">
+              <span id="itemType" class="type-badge"></span>
+              <span id="itemTime" class="metadata"></span>
+            </div>
+            <p id="itemSummary" class="item-summary"></p>
+
+            <div class="confidence-block">
+              <div><span>Confidence</span><strong id="confidenceValue">—</strong></div>
+              <div class="confidence-track"><span id="confidenceBar"></span></div>
+              <p id="confidenceBasis"></p>
+            </div>
+
+            <dl class="provenance-list">
+              <div><dt>Source</dt><dd id="itemSource"></dd></div>
+              <div><dt>Verification</dt><dd id="itemVerification"></dd></div>
+              <div><dt>Transformation</dt><dd id="itemTransform"></dd></div>
+            </dl>
+
+            <div class="excerpt-block">
+              <span>Supporting excerpt</span>
+              <blockquote id="itemExcerpt"></blockquote>
+            </div>
+
+            <button id="copyEvidence" class="button button-wide button-quiet" type="button">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="8" y="8" width="11" height="12" rx="2"/><path d="M16 8V5a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2v11a2 2 0 0 0 2 2h3"/></svg>
+              Copy evidence record
+            </button>
+          </div>
+        </div>
+
+        <div id="historyPane" class="inspector-pane" role="tabpanel" aria-labelledby="historyTab" hidden>
+          <ol id="historyList" class="history-list"></ol>
+        </div>
+
+        <div id="reviewPane" class="inspector-pane" role="tabpanel" aria-labelledby="reviewTab" hidden>
+          <div id="reviewLog" class="review-log"><p>No human review recorded for this item.</p></div>
+        </div>
+
+        <div class="review-actions" aria-label="Human review actions">
+          <button type="button" class="review-button approve" data-review="approved">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 4 4L19 6"/></svg><span>Approve</span>
+          </button>
+          <button type="button" class="review-button challenge" data-review="challenged">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 17h.01M12 14a4 4 0 1 0-4-4"/></svg><span>Challenge</span>
+          </button>
+          <button type="button" class="review-button correct" data-review="corrected">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m4 20 4.5-1 10-10-3.5-3.5-10 10L4 20ZM13.5 7l3.5 3.5"/></svg><span>Correct</span>
+          </button>
+          <button type="button" class="review-button reject" data-review="rejected">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg><span>Reject</span>
+          </button>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="timeline-panel" aria-label="Trace timeline">
+      <div class="timeline-controls">
+        <button id="stepBack" class="icon-button" type="button" aria-label="Previous event" title="Previous event">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 6-7 6 7 6V6ZM5 6v12"/></svg>
+        </button>
+        <button id="playPause" class="play-button" type="button" aria-label="Play trace">
+          <svg class="play-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 8 6-8 6V6Z"/></svg>
+          <svg class="pause-icon" viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M8 6v12M16 6v12"/></svg>
+        </button>
+        <button id="stepForward" class="icon-button" type="button" aria-label="Next event" title="Next event">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 7 6-7 6V6Zm10 0v12"/></svg>
+        </button>
+        <span id="timelineClock" class="timeline-clock">00:00.0</span>
+      </div>
+      <div class="timeline-track-wrap">
+        <input id="timelineRange" type="range" min="0" max="8" value="0" step="1" aria-label="Trace position" />
+        <div id="timelineTicks" class="timeline-ticks" aria-hidden="true"></div>
+      </div>
+      <div class="timeline-now">
+        <span>Now observing</span>
+        <strong id="currentAction">No active event</strong>
+      </div>
+    </footer>
+  </div>
+
+  <div id="reviewModal" class="modal-backdrop" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="reviewModalTitle">
+      <div class="modal-heading">
+        <div><span class="eyebrow">Human oversight</span><h2 id="reviewModalTitle">Review this item</h2></div>
+        <button id="closeModal" class="icon-button" type="button" aria-label="Close review dialog">×</button>
+      </div>
+      <p id="reviewPrompt"></p>
+      <label for="reviewNote">Review note <span>(required for challenges, corrections, and rejections)</span></label>
+      <textarea id="reviewNote" rows="4" placeholder="Explain what should be accepted, questioned, or changed…"></textarea>
+      <div id="correctionField" hidden>
+        <label for="correctionInput">Corrected wording</label>
+        <textarea id="correctionInput" rows="3" placeholder="Enter the corrected claim…"></textarea>
+      </div>
+      <div class="modal-actions">
+        <button id="cancelReview" class="button button-quiet" type="button">Cancel</button>
+        <button id="saveReview" class="button button-primary" type="button">Record review</button>
+      </div>
+    </section>
+  </div>
+
+  <div id="toastRegion" class="toast-region" aria-live="polite" aria-atomic="true"></div>
+  <script src="app.js"></script>
+</body>
+</html>

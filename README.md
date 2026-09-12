@@ -192,7 +192,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), browse the [roadmap](ROADMAP.md),
 
 ## Governance, security, and attribution
 
-- Stewarded by **eGovernment AI LLC** under the governance described in [GOVERNANCE.md](GOVERNANCE.md).
+- Stewarded by **EGOVERNMENT AI LLC** under the governance described in [GOVERNANCE.md](GOVERNANCE.md).
 - Founded and product-directed by **Leonidas Esquire Williamson**; see [AUTHORS.md](AUTHORS.md) and [CITATION.cff](CITATION.cff).
 - Security concerns should be reported privately under [SECURITY.md](SECURITY.md).
 - Contributions use the [Developer Certificate of Origin](DCO.md) and project [Code of Conduct](CODE_OF_CONDUCT.md).

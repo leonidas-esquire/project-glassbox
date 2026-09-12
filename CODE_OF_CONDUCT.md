@@ -27,7 +27,7 @@ We value intellectual honesty, evidence, constructive disagreement, and the humi
 
 This code applies in project repositories, discussions, events, and public spaces where someone represents Project Glassbox. Maintainers may edit or remove contributions and temporarily or permanently restrict participation when behavior violates this code.
 
-Report conduct concerns privately to the project stewards through a private GitHub channel or the contact route listed by [eGovernment AI LLC](https://egovernment.ai). Reports will be handled as confidentially as practical. Retaliation against a reporter is prohibited.
+Report conduct concerns privately to the project stewards through a private GitHub channel or the contact route listed by [EGOVERNMENT AI LLC](https://egovernment.ai). Reports will be handled as confidentially as practical. Retaliation against a reporter is prohibited.
 
 Enforcement decisions should be proportionate, documented privately, and free of conflicts of interest. A person named in a report will not adjudicate that report.
 

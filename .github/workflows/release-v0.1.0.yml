@@ -1,0 +1,47 @@
+name: Release v0.1.0
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/release-v0.1.0.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  validate-and-release:
+    name: Validate and publish initial release
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install locked dependencies
+        run: npm ci --ignore-scripts
+
+      - name: Validate release candidate
+        run: |
+          npm run check
+          npm audit --omit=dev
+
+      - name: Create v0.1.0 release once
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view v0.1.0 >/dev/null 2>&1; then
+            echo "Release v0.1.0 already exists; no action required."
+            exit 0
+          fi
+          gh release create v0.1.0 \
+            --target "$GITHUB_SHA" \
+            --title "Project Glassbox v0.1.0" \
+            --notes "First public release of Project Glassbox: open infrastructure for observable, verifiable, human-governed AI. Includes the interactive Context Microscope, LLM/deterministic/hybrid Agent Layer, evidence provenance, deterministic replay, human-review controls, audit export, and explicit epistemic safety boundaries."

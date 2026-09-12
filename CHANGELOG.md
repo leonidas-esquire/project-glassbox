@@ -15,6 +15,10 @@ All notable changes to Project Glassbox are documented here. The format follows 
 
 - Public project identity standardized as **Project Glassbox**.
 
+### Fixed
+
+- Corrected the local quick-start server's static-root containment check and added an HTTP regression test.
+
 ## [0.1.0] — 2026-09-12
 
 ### Added

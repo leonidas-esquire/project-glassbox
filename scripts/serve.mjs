@@ -3,7 +3,7 @@ import { createServer } from "node:http";
 import { extname, resolve, sep } from "node:path";
 import { fileURLToPath } from "node:url";
 
-const root = fileURLToPath(new URL("../dist/", import.meta.url));
+const root = resolve(fileURLToPath(new URL("../dist/", import.meta.url)));
 const port = Number.parseInt(process.env.PORT || "4173", 10);
 const host = process.env.HOST || "127.0.0.1";
 
@@ -48,3 +48,5 @@ const server = createServer((request, response) => {
 server.listen(port, host, () => {
   console.log(`Project Glassbox is running at http://${host}:${port}`);
 });
+
+export { server };

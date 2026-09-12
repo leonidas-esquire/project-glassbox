@@ -4,16 +4,13 @@ All notable changes to Project Glassbox are documented here. The format follows 
 
 ## [Unreleased]
 
-### Added
+No unreleased changes.
 
-- Public open-source documentation, governance, security policy, contribution guide, DCO, citation metadata, and brand policy.
-- Machine-readable observable-agent-event and audit-record schemas.
-- Dependency-free local development server, repository validation, automated tests, and CI configuration.
-- Public and developer-focused README visual assets.
+## [0.1.1] — 2026-09-12
 
 ### Changed
 
-- Public project identity standardized as **Project Glassbox**.
+- Aligned the README launch narrative and standardized the confirmed legal-holder name as **EGOVERNMENT AI LLC**.
 
 ### Fixed
 
@@ -23,6 +20,11 @@ All notable changes to Project Glassbox are documented here. The format follows 
 
 ### Added
 
+- Public open-source documentation, governance, security policy, contribution guide, DCO, citation metadata, and brand policy.
+- Machine-readable observable-agent-event and audit-record schemas.
+- Dependency-free local development server, repository validation, automated tests, and CI configuration.
+- Public and developer-focused README visual assets.
+- Public project identity standardized as **Project Glassbox**.
 - Interactive Glassbox AI observability application.
 - Real-time Context Microscope with six granularity levels.
 - Dedicated Agent Layer for LLM, deterministic/WASM, and hybrid agents.

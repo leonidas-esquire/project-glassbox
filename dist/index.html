@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#070b14" />
-  <meta name="description" content="Glassbox is a real-time Context Microscope for inspecting multi-model context, evidence, telemetry, synthesis, provenance, and human review." />
+  <meta name="description" content="Glassbox is a real-time Context Microscope for inspecting LLM, deterministic, and hybrid agents, their context, execution, provenance, telemetry, and human review." />
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23070b14'/%3E%3Cpath d='M18 17h28v30H18z' fill='none' stroke='%2379f2d0' stroke-width='4'/%3E%3Cpath d='M22 40l9-10 7 6 6-10' fill='none' stroke='%238c7cff' stroke-width='4' stroke-linecap='round' stroke-linejoin='round'/%3E%3Ccircle cx='44' cy='26' r='3' fill='%23ffca6b'/%3E%3C/svg%3E" />
   <title>Glassbox — AI Context Microscope</title>
   <link rel="stylesheet" href="styles.css" />
@@ -49,7 +49,7 @@
 
     <div class="truth-banner" role="note">
       <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 3.8 6v5.5c0 4.6 3.5 8.3 8.2 9.5 4.7-1.2 8.2-4.9 8.2-9.5V6L12 3Z"/><path d="m8.7 12 2.1 2.1 4.7-5"/></svg>
-      <p><strong>Observable trace, not private thoughts.</strong> Glassbox shows instrumented context, tools, evidence, telemetry, and concise reasoning summaries. Private chain-of-thought stays restricted; neural signals are never presented as literal thoughts. This session uses synthetic demonstration data.</p>
+      <p><strong>Observable trace, not private thoughts.</strong> Glassbox shows agent activity, instrumented context, deterministic execution, evidence, and concise reasoning summaries. Aggregate neural telemetry may reveal activity patterns when supplied, but never literal thoughts or proven “understanding.” This session uses synthetic demonstration data.</p>
       <button id="dismissBanner" type="button" aria-label="Dismiss notice">×</button>
     </div>
 
@@ -104,7 +104,7 @@
         <div class="panel-heading graph-heading">
           <div>
             <span class="eyebrow">Real-time context microscope</span>
-            <h2 id="graphTitle">Model lanes</h2>
+            <h2 id="graphTitle">Agent layer</h2>
           </div>
           <div class="graph-tools">
             <div class="canvas-mode-switch" role="group" aria-label="Canvas mode">
@@ -127,13 +127,13 @@
         <div class="microscope-toolbar">
           <div class="granularity-readout">
             <span>Granularity</span>
-            <strong id="granularityTitle">Model level</strong>
-            <small id="granularityDescription">Who is working, what each model received, and what it contributed.</small>
+            <strong id="granularityTitle">Agent level</strong>
+            <small id="granularityDescription">Who is acting, how each agent is powered, what authority it has, and what it contributes.</small>
           </div>
           <div class="granularity-control">
-            <input id="granularityRange" type="range" min="1" max="5" value="2" step="1" aria-label="Context granularity" />
+            <input id="granularityRange" type="range" min="1" max="6" value="2" step="1" aria-label="Context granularity" />
             <div class="granularity-stops" aria-hidden="true">
-              <span>System</span><span>Models</span><span>Reasoning</span><span>Evidence</span><span>Telemetry</span>
+              <span>System</span><span>Agents</span><span>Models</span><span>Reasoning</span><span>Evidence</span><span>Telemetry</span>
             </div>
           </div>
           <div class="boundary-status" title="Protected internal reasoning is intentionally not exposed">
@@ -154,10 +154,11 @@
           <span id="integrityChip" class="integrity-chip"><span></span> Integrity checks pending</span>
         </div>
 
-        <div id="graphStage" class="graph-stage" tabindex="0" data-hint="SELECT A MODEL TO INSPECT" aria-label="Interactive context microscope. Select any visible item to inspect it.">
+        <div id="graphStage" class="graph-stage" tabindex="0" data-hint="SELECT AN AGENT OR EVENT TO INSPECT" aria-label="Interactive context microscope. Select any visible item to inspect it.">
           <div id="canvasTransform" class="canvas-transform">
             <div id="systemView" class="microscope-view system-view" hidden></div>
-            <div id="agentLanesView" class="microscope-view agent-lanes-view"></div>
+            <div id="agentLayerView" class="microscope-view agent-layer-view"></div>
+            <div id="agentLanesView" class="microscope-view agent-lanes-view" hidden></div>
 
             <svg id="evidenceGraph" class="microscope-view" viewBox="0 0 920 600" role="img" aria-labelledby="graphSvgTitle graphSvgDesc" hidden>
             <title id="graphSvgTitle">Observable AI evidence graph</title>
@@ -217,7 +218,7 @@
       <aside class="panel inspector-panel" aria-labelledby="inspectorTitle">
         <div class="panel-heading inspector-heading">
           <div>
-            <span class="eyebrow">Context inspector</span>
+            <span class="eyebrow">Agent &amp; evidence inspector</span>
             <h2 id="inspectorTitle">Select an item</h2>
           </div>
           <span id="selectedStatus" class="status-pill unknown">UNKNOWN</span>
@@ -232,7 +233,7 @@
         <div id="evidencePane" class="inspector-pane" role="tabpanel" aria-labelledby="evidenceTab">
           <div id="inspectorEmpty" class="inspector-empty">
             <svg viewBox="0 0 48 48" aria-hidden="true"><circle cx="21" cy="21" r="12"/><path d="m30 30 9 9M17 18h8M17 23h5"/></svg>
-            <p>Choose a narration card or graph node to inspect its provenance.</p>
+            <p>Choose any agent, event, message, transition, context record, or graph node to inspect it.</p>
           </div>
           <div id="inspectorContent" hidden>
             <div class="type-row">
@@ -245,6 +246,24 @@
               <div><span>Produced by</span><strong id="itemAgent">—</strong></div>
               <div><span>Record kind</span><strong id="itemRecordKind">—</strong></div>
             </div>
+
+            <section id="agentProfileBlock" class="agent-profile-block" hidden>
+              <div class="agent-profile-grid">
+                <div><span>Architecture</span><strong id="agentArchitecture">—</strong></div>
+                <div><span>Lifecycle</span><strong id="agentLifecycle">—</strong></div>
+                <div><span>Owner</span><strong id="agentOwner">—</strong></div>
+                <div><span>Current task</span><strong id="agentCurrentTask">—</strong></div>
+              </div>
+              <dl class="agent-policy-list">
+                <div><dt>Granted authority</dt><dd id="agentAuthority"></dd></div>
+                <div><dt>Prohibited actions</dt><dd id="agentProhibited"></dd></div>
+                <div><dt>Memory activity</dt><dd id="agentMemory"></dd></div>
+                <div><dt>Runtime and tools</dt><dd id="agentRuntime"></dd></div>
+                <div><dt>Messages</dt><dd id="agentMessages"></dd></div>
+                <div><dt>Dependencies</dt><dd id="agentDependencies"></dd></div>
+                <div><dt>System contribution</dt><dd id="agentContribution"></dd></div>
+              </dl>
+            </section>
 
             <div class="confidence-block">
               <div><span>Confidence</span><strong id="confidenceValue">—</strong></div>

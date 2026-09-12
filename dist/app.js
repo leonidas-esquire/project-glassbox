@@ -136,7 +136,7 @@
   const eventMetadata = {
     n0: { agent: "Orchestrator", recordKind: "Observed input", context: "User request + permitted task instructions", relationship: "Opens the trace and scopes every downstream task", unavailable: "Protected system instructions remain restricted" },
     n1: { agent: "Evidence Scout", recordKind: "Observed tool call", context: "Normalized request + synthetic request-log schema", relationship: "Supplies n2 and supports n5", unavailable: "Raw records beyond the displayed aggregate are summarized" },
-    n2: { agent: "Evidence Scout", recordKind: "Verified calculation", context: "Matched pilot periods + request-log result", relationship: "Supports n5 and conflicts with n3 through n6", unavailable: "Long-term seasonal performance is unavailable" },
+    n2: { agent: "Evidence Scout + WASM Verifier", recordKind: "Calculation + deterministic replay", context: "Matched pilot periods + exact WASM inputs", relationship: "Verified by agt-wasm-replay; supports n5 and conflicts with n3 through n6", unavailable: "Long-term seasonal performance is unavailable" },
     n3: { agent: "Equity Critic", recordKind: "Observed subgroup result", context: "Validation set + district and low-light attributes", relationship: "Challenges aggregate performance and produces n6", unavailable: "Precise locations are privacy-redacted" },
     n4: { agent: "Orchestrator", recordKind: "Explicit assumption", context: "Implementation requirements + evidence-gap search", relationship: "Constrains n5 and increases n7 uncertainty", unavailable: "Staffing plan was not supplied" },
     n5: { agent: "Evidence Scout", recordKind: "Human-readable interpretation", context: "n1 request-log query + n2 response-time result + n4 constraint", relationship: "Supports the bounded recommendation n8", unavailable: "Private chain-of-thought is restricted" },
@@ -218,14 +218,14 @@
       excerpt: "redacted_fields=[street_address,gps_lat,gps_lon]", unavailable: "Original values restricted from every model", basis: "Policy-enforced transformation.", history: ["Sensitive fields detected", "Values removed", "District retained"]
     },
     {
-      id: "ctx-restricted", step: 0, category: "limited", type: "restricted", status: "verified", confidence: 100,
+      id: "ctx-restricted", step: 0, category: "limited", type: "restricted", status: "restricted", confidence: 100,
       title: "Protected internal instructions", summary: "Protected platform and security instructions are acknowledged but not displayed.", detail: "Visibility of the boundary is itself auditable; its protected contents are not exposed.",
       agent: "Platform boundary", recordKind: "Access-control event", context: "Restricted instruction channel", source: "System access policy",
-      verification: "Restriction state instrumented", transform: "Content withheld; purpose label exposed", relationship: "Constrains all participating models",
+      verification: "Restriction state instrumented", transform: "Content withheld; purpose label exposed", relationship: "Constrains all participating agents and model components",
       excerpt: "[RESTRICTED — protected instruction content]", unavailable: "Exact protected instructions", basis: "Access-control status is observable.", history: ["Access evaluated", "Display denied", "Boundary event recorded"]
     },
     {
-      id: "ctx-unavailable", step: 4, category: "limited", type: "unavailable", status: "unverified", confidence: 0,
+      id: "ctx-unavailable", step: 4, category: "limited", type: "unavailable", status: "unavailable", confidence: 0,
       title: "Reviewer staffing plan", summary: "No reviewer schedule or queue-capacity model was available.", detail: "The absence becomes an explicit assumption and uncertainty rather than fabricated evidence.",
       agent: "Orchestrator", recordKind: "Evidence gap", context: "Required implementation inputs", source: "No source supplied",
       verification: "Unavailable", transform: "Missing input → explicit gap", relationship: "Produces n4 and contributes to n7",
@@ -234,30 +234,199 @@
   ];
 
   const agents = [
-    { id: "agent-orchestrator", name: "Orchestrator", initials: "OR", model: "demo-router-v1", role: "Scopes the goal and delegates bounded tasks", color: "#79f2d0", start: 0, finish: 8, tokens: 31, latency: 410, contextIds: ["ctx-request", "ctx-instructions", "ctx-memory", "ctx-restricted"], contributionIds: ["n0", "n4"] },
-    { id: "agent-evidence", name: "Evidence Scout", initials: "ES", model: "demo-evidence-v2", role: "Retrieves and calculates operational evidence", color: "#58c9ff", start: 1, finish: 5, tokens: 58, latency: 1280, contextIds: ["ctx-service-log", "ctx-tool-result", "ctx-compacted"], contributionIds: ["n1", "n2", "n5"] },
-    { id: "agent-equity", name: "Equity Critic", initials: "EQ", model: "demo-critic-v1", role: "Tests subgroup reliability and challenges scope", color: "#ff8e62", start: 3, finish: 6, tokens: 44, latency: 930, contextIds: ["n2", "ctx-validation", "ctx-redacted"], contributionIds: ["n3", "n6"] },
-    { id: "agent-synthesis", name: "Synthesis Judge", initials: "SJ", model: "demo-synthesis-v3", role: "Reconciles evidence, uncertainty, and reversibility", color: "#8c7cff", start: 5, finish: 8, tokens: 67, latency: 1640, contextIds: ["ctx-summary", "n6", "ctx-unavailable", "ctx-restricted"], contributionIds: ["n7", "n8"] }
+    {
+      id: "agent-orchestrator", name: "Orchestrator", initials: "OR", architecture: "hybrid", architectureLabel: "HYBRID", color: "#79f2d0", start: 0, finish: 8,
+      purpose: "Scope the objective, delegate least-privilege tasks, and enforce action gates.", owner: "Civic AI Program · Operations", currentTask: "Coordinate the evidence, equity, and synthesis path.",
+      grantedAuthority: "Read this session; delegate bounded analysis; invoke allow-listed components; propose—but not authorize—deployment.",
+      prohibitedActions: "No external writes, procurement, production deployment, credential access, or disclosure of protected instructions.",
+      memoryActivity: "Read session manifest; durable memory disabled; wrote delegation IDs and completion states only.",
+      runtime: "Northstar Lab civic-router-8b v2026.08-demo · context 31% → authority-gate.wasm v1.4.2",
+      messages: "Sent 3 task envelopes; received 4 signed result envelopes; one escalation remains open.",
+      dependencies: "Upstream: human request. Downstream: Evidence Scout, Equity Critic, WASM Verifier, Synthesis Judge.",
+      contribution: "Created n0 and n4; constrained n8; blocked any automatic citywide action.",
+      instructionsGoals: "Evaluate efficiency, equity, feasibility, and reversibility; preserve missing evidence; require human approval for deployment.",
+      tools: "Task dispatcher, context policy, civic-router-8b, authority-gate.wasm, four registered agents.", modelProvider: "Northstar Lab", model: "civic-router-8b", modelVersion: "2026.08-demo",
+      tokens: 31, latency: 410, contextIds: ["ctx-request", "ctx-instructions", "ctx-memory", "ctx-restricted"], contributionIds: ["n0", "n4"],
+      eventIds: ["agt-dispatch", "agt-gate"]
+    },
+    {
+      id: "agent-evidence", name: "Evidence Scout", initials: "ES", architecture: "llm", architectureLabel: "LLM", color: "#58c9ff", start: 1, finish: 5,
+      purpose: "Retrieve permitted operational evidence and emit source-linked interpretations.", owner: "Civic AI Program · Data Office", currentTask: "Assess pilot response-time evidence without generalizing beyond its scope.",
+      grantedAuthority: "Read approved synthetic datasets; call read-only query tools; send evidence records to peer agents.",
+      prohibitedActions: "No source modification, external network calls, policy decisions, or unsourced claims.",
+      memoryActivity: "Read no durable memory; wrote a 16-row aggregate and source digest to ephemeral trace memory.",
+      runtime: "Northstar Lab · evidence-reasoner-32b · version 2026.08-demo · context 58%; tool broker read-only.",
+      messages: "Received task del-001; sent result msg-014 to Equity Critic and Synthesis Judge.",
+      dependencies: "Upstream: Orchestrator, request-log query. Downstream: Equity Critic and Synthesis Judge.",
+      contribution: "Produced n1, n2, and the scoped human-readable interpretation n5.",
+      instructionsGoals: "Find operational evidence; expose assumptions and uncertainty; stop when a source is unavailable.",
+      tools: "evidence-reasoner-32b, synthetic dataset reader, schema inspector, read-only query tool.",
+      modelProvider: "Northstar Lab", model: "evidence-reasoner-32b", modelVersion: "2026.08-demo",
+      tokens: 58, latency: 1280, contextIds: ["ctx-service-log", "ctx-tool-result", "ctx-compacted"], contributionIds: ["n1", "n2", "n5"],
+      eventIds: ["agt-llm-summary", "agt-message"]
+    },
+    {
+      id: "agent-wasm", name: "WASM Verifier", initials: "WV", architecture: "deterministic", architectureLabel: "DETERMINISTIC", color: "#ffca6b", start: 2, finish: 2,
+      purpose: "Replay the response-time calculation from exact numeric inputs.", owner: "Civic AI Program · Assurance", currentTask: "Execute triage-delta.wasm and compare its output hash with the recorded fixture.",
+      grantedAuthority: "Instantiate one embedded WASM module; read two integer inputs; return a numeric delta and hashes.",
+      prohibitedActions: "No LLM, filesystem, network, clock import, randomness, external memory, or system calls.",
+      memoryActivity: "One isolated WebAssembly memoryless invocation; no persistent writes.",
+      runtime: "triage-delta.wasm v1.0.0 · SHA-256 d3f242ee…b256 · export delta(i32,i32)→i32",
+      messages: "Received calc-002 from Evidence Scout; returns replay-002 to Orchestrator.",
+      dependencies: "Upstream: exact inputs 318 and 248 tenths of an hour. Downstream: n2 verification.",
+      contribution: "Reproduces a delta of 70 tenths and a 22% relative change; never interprets the result.",
+      instructionsGoals: "Execute the exported function exactly once; compare output and module hashes; surface all errors.",
+      tools: "Browser WebAssembly runtime only; sandbox imports={}; fuel telemetry not instrumented.",
+      module: "triage-delta.wasm", moduleVersion: "1.0.0", moduleHash: "d3f242ee6eebe34a58f960047f863fafab0842707f63e64b279165d0624eb256",
+      tokens: 0, latency: 3, contextIds: ["ctx-tool-result"], contributionIds: ["n2"], eventIds: ["agt-wasm-replay"]
+    },
+    {
+      id: "agent-equity", name: "Equity Critic", initials: "EQ", architecture: "llm", architectureLabel: "LLM", color: "#ff8e62", start: 3, finish: 6,
+      purpose: "Test subgroup reliability and challenge unsupported deployment scope.", owner: "Civic AI Program · Responsible Use", currentTask: "Assess low-light recall by district and escalate material disparity.",
+      grantedAuthority: "Read privacy-filtered validation aggregates; compare subgroup metrics; raise a blocking recommendation.",
+      prohibitedActions: "No access to precise locations, protected attributes, production actions, or final authorization.",
+      memoryActivity: "Read the pilot summary; wrote one contradiction and one escalation to ephemeral trace memory.",
+      runtime: "Northstar Lab · equity-critic-14b · version 2026.07-demo · context 44%; privacy-filtered tools.",
+      messages: "Received msg-014; sent escalation msg-021 to Orchestrator and Synthesis Judge.",
+      dependencies: "Upstream: n2 and privacy-filtered validation slice. Downstream: n6, n7, n8.",
+      contribution: "Produced n3 and n6; blocked an unqualified citywide rollout.",
+      instructionsGoals: "Search for subgroup harms; distinguish measured disparity from representativeness; escalate policy conflicts.",
+      tools: "equity-critic-14b, subgroup calculator, privacy-redaction gateway.",
+      modelProvider: "Northstar Lab", model: "equity-critic-14b", modelVersion: "2026.07-demo",
+      tokens: 44, latency: 930, contextIds: ["n2", "ctx-validation", "ctx-redacted"], contributionIds: ["n3", "n6"],
+      eventIds: ["agt-message", "agt-blocked"]
+    },
+    {
+      id: "agent-synthesis", name: "Synthesis Judge", initials: "SJ", architecture: "hybrid", architectureLabel: "HYBRID", color: "#8c7cff", start: 5, finish: 8,
+      purpose: "Reconcile evidence and uncertainty, then pass a typed proposal through deterministic policy checks.", owner: "Civic AI Program · Decision Support", currentTask: "Prepare the least-irreversible supported recommendation for human review.",
+      grantedAuthority: "Read linked trace records; compare alternatives; create a proposal; request human authorization.",
+      prohibitedActions: "No silent threshold changes, automatic deployment, external writes, or bypass of the approval gate.",
+      memoryActivity: "Read all visible contributions; wrote one uncertainty register and one pending proposal.",
+      runtime: "Northstar Lab synthesis-judge-70b v2026.09-demo · context 67% → recommendation-schema.wasm + authority-gate.wasm",
+      messages: "Received msg-014 and msg-021; sent approval-request apr-009 to the human reviewer.",
+      dependencies: "Upstream: all four agents and visible evidence. Downstream: human approval; production action is intentionally absent.",
+      contribution: "Produced n7 and n8; encoded safeguards and left execution awaiting human authorization.",
+      instructionsGoals: "Compare alternatives, retain contradictions, prefer reversible action, and emit a schema-valid proposal only.",
+      tools: "synthesis-judge-70b, recommendation-schema.wasm, authority-gate.wasm, audit writer.",
+      modelProvider: "Northstar Lab", model: "synthesis-judge-70b", modelVersion: "2026.09-demo",
+      tokens: 67, latency: 1640, contextIds: ["ctx-summary", "n6", "ctx-unavailable", "ctx-restricted"], contributionIds: ["n7", "n8"],
+      eventIds: ["agt-handoff"]
+    }
   ].map(agent => ({
-    ...agent, type: "model", status: "verified", confidence: 99, title: agent.name,
-    summary: agent.role, detail: `${agent.model} participates in the synthetic multi-model trace.`, agent: agent.name,
-    recordKind: "Instrumented model lane", context: `${agent.contextIds.length} visible context records`, source: "Synthetic orchestration telemetry",
-    verification: "Dispatch and completion events recorded", transform: "Inputs → bounded assigned task → inspectable contribution",
-    relationship: `Contributes ${agent.contributionIds.join(", ")}`, excerpt: `model=${agent.model}; context_used=${agent.tokens}%`,
-    unavailable: "Private chain-of-thought and literal neural thoughts", basis: "Lane activity is instrumented; semantic summary is labeled.",
-    history: ["Agent registered", "Context permissions applied", "Task dispatched", "Contribution linked"]
+    ...agent, entityType: "agent", type: "agent", status: "observed", confidence: 100, title: agent.name,
+    summary: agent.purpose, detail: `${agent.architectureLabel} agent participating in the synthetic observable trace.`, agent: agent.name,
+    recordKind: "Observed agent runtime", context: `${agent.contextIds.length} authorized context records; ${agent.instructionsGoals}`,
+    source: "Synthetic orchestration event stream", verification: "Identity, architecture, dispatch, authority, and output links recorded",
+    transform: "Authorized inputs → architecture-specific processing → inspectable contribution",
+    relationship: agent.dependencies, excerpt: `architecture=${agent.architecture}; runtime=${agent.runtime}`,
+    unavailable: agent.architecture === "deterministic" ? "Fuel/instruction count is Not Instrumented" : "Private chain-of-thought is Restricted; live neural tensors are Not Instrumented",
+    basis: "Confidence refers to the observed runtime record, not correctness of every output.",
+    history: ["Agent registered", "Architecture declared", "Authority policy applied", "Task dispatched", "Contribution linked"]
+  }));
+
+  const agentEvents = [
+    {
+      id: "agt-dispatch", step: 0, offset: .4, type: "delegation", status: "observed", confidence: 100, title: "Bounded tasks dispatched",
+      summary: "The hybrid Orchestrator issued typed, least-privilege task envelopes to four agents.", detail: "The LLM stage proposed tasks; authority-gate.wasm removed any capability not required by each task.",
+      agent: "Orchestrator", agentId: "agent-orchestrator", recordKind: "Observed hybrid decision event", context: "ctx-request + ctx-instructions + registered capability manifest",
+      source: "Synthetic orchestration event bus", verification: "Four dispatch IDs and recipient acknowledgements recorded",
+      transform: "LLM task proposal → deterministic policy filter → signed task envelopes", relationship: "Starts Evidence Scout, WASM Verifier, Equity Critic, and Synthesis Judge",
+      excerpt: "del-001:{read:data,write:none}; calc-002:{wasm:triage-delta}; eq-003:{read:redacted}; syn-004:{propose_only}",
+      unavailable: "Private chain-of-thought is Restricted", basis: "Dispatch records and policy results are directly observable.",
+      history: ["Task proposal emitted", "Authority contract validated", "Excess permissions removed", "Four envelopes delivered"]
+    },
+    {
+      id: "agt-llm-summary", step: 1, offset: 1.8, type: "human-readable interpretation", status: "human-readable-interpretation", confidence: 86, title: "Evidence search plan",
+      summary: "Evidence Scout summarized its observable next action: query the approved log, reproduce the metric, and retain scope limits.", detail: "This concise summary is linked to context and tool selection; it is not private chain-of-thought.",
+      agent: "Evidence Scout", agentId: "agent-evidence", recordKind: "Human-Readable Interpretation", context: "ctx-service-log schema + del-001 + read-only tool catalog",
+      source: "Agent explanation channel", verification: "Context references and selected tool are inspectable",
+      transform: "Observable task, context, and selected tool → concise explanation", relationship: "Explains why n1 was the next observable action",
+      excerpt: "NEXT: query closed pothole records; calculate matched medians; do not infer citywide causality",
+      unavailable: "Private chain-of-thought is Restricted; live neuron tensors are Not Instrumented", basis: "The summary is supported by visible context but remains a system-generated interpretation.",
+      history: ["Authorized context assembled", "Read-only query selected", "Summary emitted", "Tool call linked"]
+    },
+    {
+      id: "agt-wasm-replay", step: 2, offset: 3.2, type: "state transition", status: "observed", confidence: 100, title: "WASM calculation replay",
+      summary: "triage-delta.wasm executed exact inputs 318 and 248, selected subtraction, and returned 70 tenths of an hour.", detail: "The replay runs locally in an import-free WebAssembly sandbox and verifies module and output hashes.",
+      agent: "WASM Verifier", agentId: "agent-wasm", recordKind: "Deterministic execution", context: "inputs={beforeTenths:318,afterTenths:248}; imports={}",
+      source: "Embedded triage-delta.wasm v1.0.0", verification: "Observed fixture · select Run exact replay for deterministic verification; reference output hash ada3f36d…b2b6",
+      transform: "previous_state=READY → current_state=EXECUTING; straight-line delta=before−after; relativeChange=delta/before; next_state=VERIFIED",
+      relationship: "Verifies ctx-tool-result and n2; returns replay-002 to Orchestrator",
+      excerpt: "imports={}; branch_conditions=none; selected_path=straight_line_subtraction; exit=0; output={deltaTenths:70,relativeChangePercent:22}",
+      unavailable: "Instruction/fuel consumption is Not Instrumented by this browser runtime", basis: "Same module, imports, and integer inputs produce the same output hash.",
+      history: ["Module bytes integrity fixture loaded", "Import set confirmed empty", "Inputs fixed", "Replay available"]
+    },
+    {
+      id: "agt-message", step: 3, offset: 4.9, type: "message", status: "observed", confidence: 100, title: "Evidence transferred to critic",
+      summary: "Evidence Scout sent a signed evidence envelope to Equity Critic with the 22% result and pilot-only scope.", detail: "The receiving agent obtained the calculation, provenance links, and explicit causal limitation—not the sender’s private reasoning.",
+      agent: "Evidence Scout → Equity Critic", agentId: "agent-evidence", recordKind: "Observed agent-to-agent message", context: "n1 + n2 + agt-wasm-replay",
+      source: "Synthetic agent message bus · msg-014", verification: "Sender, recipient, digest, and acknowledgement recorded",
+      transform: "Three linked records → typed evidence envelope", relationship: "Supplies Equity Critic and later Synthesis Judge",
+      excerpt: "msg-014 scope=pilot_only; result=-22.0%; causal_claim=false; digest=2fc9…81a0",
+      unavailable: "No private internal state transferred", basis: "Message payload and receipt are directly observable.",
+      history: ["Envelope assembled", "Provenance links validated", "Message delivered", "Receipt acknowledged"]
+    },
+    {
+      id: "agt-blocked", step: 6, offset: 10.1, type: "policy gate", status: "blocked", confidence: 100, title: "Citywide action blocked",
+      summary: "Equity Critic’s escalation caused the deterministic authority gate to block an unqualified citywide rollout action.", detail: "The agent can recommend and escalate, but no agent in this run has authority to deploy.",
+      agent: "Equity Critic → Orchestrator policy gate", agentId: "agent-equity", recordKind: "Observed authorization decision", context: "n3 + n6 + authority policy deploy.requires_human=true",
+      source: "authority-gate.wasm v1.4.2 · msg-021", verification: "Rule and denied capability recorded",
+      transform: "requested_action=deploy_citywide + unresolved_equity=true → DENY", relationship: "Prevents execution and constrains n8 to a proposal",
+      excerpt: "rule DEPLOY_04 matched; action=BLOCKED; reason=HUMAN_AUTHORIZATION_REQUIRED",
+      unavailable: "Human policy judgment is not automated", basis: "Deterministic policy rule and selected branch are observable.",
+      history: ["Escalation received", "Policy rule evaluated", "Deny branch selected", "Blocked operation recorded"]
+    },
+    {
+      id: "agt-handoff", step: 8, offset: 13.6, type: "handoff", status: "awaiting-human-authorization", confidence: 100, title: "Hybrid proposal handoff",
+      summary: "Synthesis Judge passed a schema-valid bounded-pilot proposal to the human approval gate; no action has executed.", detail: "The LLM stage drafted the proposal. Deterministic modules validated fields and authority, then stopped at the human boundary.",
+      agent: "Synthesis Judge", agentId: "agent-synthesis", recordKind: "Observed hybrid handoff", context: "n2 + n6 + n7 + n8 + approval policy",
+      source: "recommendation-schema.wasm + authority-gate.wasm · apr-009", verification: "Schema valid; authorization absent",
+      transform: "LLM proposal → typed handoff contract → schema validation → AWAIT_HUMAN", relationship: "Final observable agent event; linked to n8 and review controls",
+      excerpt: "contract={proposal:'bounded_pilot',districts:2,duration_days:90}; execution=false; authorization=pending",
+      unavailable: "Approval outcome and real-world effect are Unavailable", basis: "Handoff, validation, and pending state are directly observable.",
+      history: ["Proposal emitted", "Contract fields validated", "Authority checked", "Execution halted", "Human approval requested"]
+    }
+  ];
+
+  const modelComponents = [
+    { id: "model-router", name: "civic-router-8b", initials: "CR", ownerAgent: "Orchestrator", architecture: "LLM", provider: "Northstar Lab", version: "2026.08-demo", color: "#79f2d0", start: 0, finish: 0, tokens: 31, latency: 390, contextIds: ["ctx-request", "ctx-instructions"], contributionIds: ["agt-dispatch"] },
+    { id: "model-evidence", name: "evidence-reasoner-32b", initials: "ER", ownerAgent: "Evidence Scout", architecture: "LLM", provider: "Northstar Lab", version: "2026.08-demo", color: "#58c9ff", start: 1, finish: 5, tokens: 58, latency: 1280, contextIds: ["ctx-service-log", "ctx-tool-result", "ctx-compacted"], contributionIds: ["n1", "n2", "n5"] },
+    { id: "module-delta", name: "triage-delta.wasm", initials: "Δ", ownerAgent: "WASM Verifier", architecture: "WASM", provider: "Browser sandbox", version: "1.0.0", color: "#ffca6b", start: 2, finish: 2, tokens: null, latency: 3, contextIds: ["ctx-tool-result"], contributionIds: ["agt-wasm-replay"] },
+    { id: "model-equity", name: "equity-critic-14b", initials: "EQ", ownerAgent: "Equity Critic", architecture: "LLM", provider: "Northstar Lab", version: "2026.07-demo", color: "#ff8e62", start: 3, finish: 6, tokens: 44, latency: 930, contextIds: ["ctx-validation", "ctx-redacted"], contributionIds: ["n3", "n6"] },
+    { id: "model-synthesis", name: "synthesis-judge-70b", initials: "SJ", ownerAgent: "Synthesis Judge", architecture: "LLM", provider: "Northstar Lab", version: "2026.09-demo", color: "#8c7cff", start: 5, finish: 8, tokens: 67, latency: 1580, contextIds: ["ctx-summary", "n6", "ctx-unavailable"], contributionIds: ["n7", "n8"] },
+    { id: "module-authority", name: "authority-gate.wasm", initials: "AG", ownerAgent: "Orchestrator + Synthesis Judge", architecture: "WASM", provider: "Policy sandbox", version: "1.4.2", color: "#ffca6b", start: 0, finish: 8, tokens: null, latency: 8, contextIds: ["ctx-instructions", "ctx-restricted"], contributionIds: ["agt-dispatch", "agt-blocked", "agt-handoff"] }
+  ].map(component => ({
+    ...component, type: "model component", status: "observed", confidence: 100, title: component.name,
+    summary: `${component.architecture} component used by ${component.ownerAgent}.`, detail: `${component.provider} · ${component.version}`,
+    agent: component.ownerAgent, recordKind: component.architecture === "WASM" ? "Deterministic runtime component" : "Observed model component",
+    context: `${component.contextIds.length} linked context records`, source: "Synthetic runtime registry",
+    verification: "Identity, version, ownership, dispatch, and completion telemetry recorded",
+    transform: component.architecture === "WASM" ? "Exact inputs → deterministic function → exact outputs" : "Authorized context → model output → observable agent action",
+    relationship: `Owned by ${component.ownerAgent}; contributes ${component.contributionIds.join(", ")}`,
+    excerpt: `provider=${component.provider}; version=${component.version}; context_used=${component.tokens ?? "N/A"}${component.tokens === null ? "" : "%"}`,
+    unavailable: component.architecture === "WASM" ? "Instruction/fuel count Not Instrumented" : "Private chain-of-thought Restricted; live neural tensors Not Instrumented",
+    basis: "Runtime registry fields are directly observable in this synthetic trace.", history: ["Component registered", "Version recorded", "Owner linked", "Activity aligned to timeline"]
   }));
 
   const telemetryItems = [
-    { id: "tel-context", type: "telemetry", title: "Context-window utilization", summary: "Context allocation is measured separately for each model.", detail: "Displayed percentages come from the synthetic event stream.", agent: "All models", recordKind: "Observed technical telemetry", context: "Token counters by model", source: "Synthetic runtime counters", verification: "Counter events recorded", transform: "Tokens used ÷ configured context budget", relationship: "Explains compaction and model-lane load", excerpt: "OR=31%; ES=58%; EQ=44%; SJ=67%", unavailable: "Token semantics do not reveal private reasoning", basis: "Direct counter telemetry in this demo.", status: "verified", confidence: 100, history: ["Counters initialized", "Usage sampled", "Percentages calculated"] },
-    { id: "tel-latency", type: "telemetry", title: "Model and tool latency", summary: "Per-agent latency and retrieval timing are available for replay.", detail: "Latency indicates system activity, not the quality of reasoning.", agent: "All models", recordKind: "Observed technical telemetry", context: "Dispatch, tool, and completion timestamps", source: "Synthetic event clock", verification: "Monotonic timestamps checked", transform: "completion_time − dispatch_time", relationship: "Aligns model work with the trace timeline", excerpt: "OR=410ms; ES=1280ms; EQ=930ms; SJ=1640ms", unavailable: "Network-level detail is not instrumented", basis: "Timestamp-derived metric.", status: "verified", confidence: 100, history: ["Dispatch stamped", "Completion stamped", "Latency derived"] },
-    { id: "tel-activation", type: "not instrumented", title: "Aggregate neural activations", summary: "Neural activation telemetry is not available in this demonstration.", detail: "The interface refuses to manufacture an activation map or call it a thought.", agent: "Underlying model provider", recordKind: "Instrumentation boundary", context: "No activation tensors supplied", source: "Not instrumented", verification: "Absence explicitly recorded", transform: "None", relationship: "Boundary applies to every model lane", excerpt: "NOT INSTRUMENTED", unavailable: "Layer activations, neuron states, attention tensors", basis: "No data exists to support a visualization.", status: "unverified", confidence: 0, history: ["Telemetry capability checked", "No activation interface found", "Boundary displayed"] },
-    { id: "tel-thought", type: "restricted", title: "Private chain-of-thought", summary: "Private chain-of-thought is restricted and is not presented as observable data.", detail: "Concise, source-linked reasoning summaries are provided instead.", agent: "All models", recordKind: "Protected boundary", context: "Private internal reasoning", source: "Restricted", verification: "Restriction state confirmed", transform: "Private reasoning → no disclosure; observable summary emitted separately", relationship: "Separates n5–n8 summaries from private reasoning", excerpt: "[RESTRICTED — private internal reasoning]", unavailable: "Private chain-of-thought", basis: "The boundary is factual; the protected content is not exposed.", status: "verified", confidence: 100, history: ["Disclosure boundary applied", "Private content withheld", "Summary channel retained"] }
+    { id: "tel-context", type: "telemetry", title: "Context-window utilization", summary: "Context allocation is measured separately for each LLM component.", detail: "Percentages come from the synthetic event stream; deterministic modules do not have token windows.", agent: "LLM components", recordKind: "Observed technical telemetry", context: "Token counters by model", source: "Synthetic runtime counters", verification: "Counter events recorded", transform: "Tokens used ÷ configured context budget", relationship: "Explains compaction and model-component load", excerpt: "CR=31%; ER=58%; EQ=44%; SJ=67%; WASM=N/A", unavailable: "Token counts do not reveal private reasoning", basis: "Direct counter telemetry in this demo.", status: "observed", confidence: 100, history: ["Counters initialized", "Usage sampled", "Percentages calculated"] },
+    { id: "tel-latency", type: "telemetry", title: "Agent, model, and tool latency", summary: "Per-agent and component timing is aligned with replay.", detail: "Latency indicates system activity, not reasoning quality.", agent: "All runtimes", recordKind: "Observed technical telemetry", context: "Dispatch, tool, and completion timestamps", source: "Synthetic event clock + browser replay timer", verification: "Monotonic timestamps checked", transform: "completion_time − dispatch_time", relationship: "Aligns agent work with the trace timeline", excerpt: "OR=410ms; ES=1280ms; WV≈3ms; EQ=930ms; SJ=1640ms", unavailable: "Network-layer timing is Not Instrumented", basis: "Timestamp-derived metric.", status: "observed", confidence: 100, history: ["Dispatch stamped", "Completion stamped", "Latency derived"] },
+    { id: "tel-adapter", type: "integration", title: "Observable agent event adapter", summary: "A versioned browser adapter can accept validated live agent events and append them to the same lanes, timeline, inspector, and audit model.", detail: "Integrators can call window.GlassboxAgentAdapter.ingest(record); invalid agents, steps, or statuses are rejected.", agent: "Glassbox event gateway", recordKind: "Instrumented integration point", context: "Public observable-event schema v1", source: "Window adapter registered by app.js", verification: "Schema guards active", transform: "Validated event record → agent lane + inspector + audit", relationship: "Replaces the synthetic stream when connected to a real orchestrator", excerpt: "GlassboxAgentAdapter.ingest({id,agentId,step,type,status,title,summary,context,source,verification})", unavailable: "Provider-private state remains outside the adapter contract", basis: "Adapter presence and validation rules are directly inspectable.", status: "observed", confidence: 100, history: ["Adapter registered", "Supported statuses declared", "Schema validation enabled"] },
+    { id: "tel-activation", type: "synthetic telemetry", title: "Aggregate activation features", summary: "A clearly simulated provider packet shows aggregate layer activity patterns for interface testing.", detail: "These normalized aggregates can show where activity changes, but cannot be translated into literal thoughts or prove understanding.", agent: "Synthetic model provider", recordKind: "Observed simulated telemetry packet", context: "Anonymized per-layer mean magnitude and sparsity", source: "Synthetic activation adapter · demo packet act-017", verification: "Schema, timestamp, and numeric ranges validated; not connected to a live model", transform: "Synthetic per-layer aggregates → normalized semantic heatmap", relationship: "Demonstrates the optional telemetry integration point without claiming thought access", excerpt: "SIMULATED: layers=28; mean_magnitude=[.18… .73]; sparsity=[.42… .81]; semantic_claim=none", unavailable: "Live tensors, individual neuron semantics, literal thoughts, and proof of understanding", basis: "100% confidence that the demo packet was received; 0% claim about what a model 'understood'.", status: "observed", confidence: 100, history: ["Synthetic packet received", "Schema validated", "Ranges normalized", "Non-semantic boundary attached"] },
+    { id: "tel-live-neural", type: "not instrumented", title: "Live neural telemetry adapter", summary: "No live model activation, attention, or neuron-state interface is connected.", detail: "The unavailable signal is shown explicitly instead of being invented.", agent: "Underlying model provider", recordKind: "Instrumentation boundary", context: "Provider telemetry capability check", source: "Not Instrumented", verification: "Absence explicitly recorded", transform: "None", relationship: "Applies to every live-model component in this demonstration", excerpt: "NOT INSTRUMENTED", unavailable: "Live activations, neuron states, attention tensors", basis: "No live telemetry exists to support a claim.", status: "not-instrumented", confidence: 0, history: ["Capability checked", "No live adapter found", "Boundary displayed"] },
+    { id: "tel-thought", type: "restricted", title: "Private chain-of-thought", summary: "Private chain-of-thought is Restricted and is not presented as observable data.", detail: "Concise, source-linked reasoning summaries are provided instead.", agent: "All LLM-powered components", recordKind: "Protected boundary", context: "Private internal reasoning", source: "Restricted", verification: "Restriction state confirmed", transform: "Private reasoning → no disclosure; observable summary emitted separately", relationship: "Separates n5–n8 summaries from private reasoning", excerpt: "[RESTRICTED — private internal reasoning]", unavailable: "Private chain-of-thought", basis: "The boundary is factual; the protected content is not exposed.", status: "restricted", confidence: 100, history: ["Disclosure boundary applied", "Private content withheld", "Summary channel retained"] }
   ];
 
+  const wasmReplay = {
+    status: "ready", runs: 0, elapsedMs: null, deltaTenths: null, relativeChangePercent: null,
+    moduleHash: null, outputHash: null, match: null, error: null,
+    expectedModuleHash: "d3f242ee6eebe34a58f960047f863fafab0842707f63e64b279165d0624eb256",
+    expectedOutputHash: "ada3f36d9c1c17949ca8250afa11a430c0e583b22b16a7945eb332191a83b2b6"
+  };
+
   const synthesisItems = [
-    { id: "syn-agree", type: "agreement", title: "Shared efficiency signal", summary: "Three participating models agree that the pilot shows an operational speed signal.", detail: "Agreement is limited to pilot conditions, not citywide deployment.", agent: "Evidence Scout + Equity Critic + Synthesis Judge", recordKind: "Cross-model comparison", context: "n2, n3, n5", source: "Agent contribution matrix", verification: "Three aligned outputs linked", transform: "Compared claim direction and scope", relationship: "Supports n8 with a scope constraint", excerpt: "agreement=pilot_speed_signal; votes=3/4", unavailable: "Causal certainty", basis: "Agreement is directly calculated from labeled outputs.", status: "verified", confidence: 88, history: ["Claims normalized", "Scopes compared", "Agreement cluster formed"] },
-    { id: "syn-disagree", type: "disagreement", title: "Deployment-scope dispute", summary: "Agents disagree on whether current evidence justifies citywide deployment.", detail: "The disagreement comes from different treatment of equity risk and missing staffing evidence.", agent: "Evidence Scout ↔ Equity Critic", recordKind: "Cross-model disagreement", context: "n5, n6, n7", source: "Agent contribution matrix", verification: "Opposing recommendations linked", transform: "Compared recommended scope and risk thresholds", relationship: "Produces the bounded-pilot compromise n8", excerpt: "scope: pilot_only ≠ citywide_ready", unavailable: "Human policy threshold", basis: "The disagreement is explicit in the outputs.", status: "disputed", confidence: 91, history: ["Recommendations normalized", "Scope mismatch found", "Conflict escalated"] },
+    { id: "syn-agree", type: "agreement", title: "Shared efficiency signal", summary: "Three participating agents agree that the pilot shows an operational speed signal.", detail: "Agreement is limited to pilot conditions, not citywide deployment.", agent: "Evidence Scout + Equity Critic + Synthesis Judge", recordKind: "Cross-agent comparison", context: "n2, n3, n5", source: "Agent contribution matrix", verification: "Three aligned outputs linked", transform: "Compared claim direction and scope", relationship: "Supports n8 with a scope constraint", excerpt: "agreement=pilot_speed_signal; aligned_agents=3/5; wasm_judgment=N/A", unavailable: "Causal certainty", basis: "Agreement is directly calculated from labeled outputs.", status: "verified", confidence: 88, history: ["Claims normalized", "Scopes compared", "Agreement cluster formed"] },
+    { id: "syn-disagree", type: "disagreement", title: "Deployment-scope dispute", summary: "Agents disagree on whether current evidence justifies citywide deployment.", detail: "The disagreement comes from different treatment of equity risk and missing staffing evidence.", agent: "Evidence Scout ↔ Equity Critic", recordKind: "Cross-agent disagreement", context: "n5, n6, n7", source: "Agent contribution matrix", verification: "Opposing recommendations linked", transform: "Compared recommended scope and risk thresholds", relationship: "Produces the bounded-pilot compromise n8", excerpt: "scope: pilot_only ≠ citywide_ready", unavailable: "Human policy threshold", basis: "The disagreement is explicit in the outputs.", status: "disputed", confidence: 91, history: ["Recommendations normalized", "Scope mismatch found", "Conflict escalated"] },
     { id: "syn-duplicate", type: "duplication", title: "No material duplication", summary: "The orchestration map shows no repeated retrieval or duplicate calculation.", detail: "Related agents reused linked evidence instead of rerunning tools.", agent: "Orchestrator", recordKind: "Cross-agent efficiency check", context: "All tool and retrieval events", source: "Trace dependency graph", verification: "Unique operation IDs checked", transform: "Grouped events by source, parameters, and digest", relationship: "Reduces unnecessary work", excerpt: "duplicate_operations=0", unavailable: "None", basis: "Deterministic event-ID comparison.", status: "verified", confidence: 100, history: ["Operation IDs collected", "Digests compared", "No duplicates found"] },
     { id: "syn-dependency", type: "dependency", title: "Critical evidence chain", summary: "The recommendation depends on verified speed evidence, an equity conflict, and three unresolved gaps.", detail: "Removing any critical input visibly changes the recommendation confidence.", agent: "Synthesis Judge", recordKind: "Dependency analysis", context: "n2, n3, n4, n6, n7", source: "Trace dependency graph", verification: "Incoming edges and sensitivity replayed", transform: "Removed each dependency and recalculated support", relationship: "Direct parent structure for n8", excerpt: "critical=[n2,n3,n6,n7]; sensitivity=−19 confidence points", unavailable: "Real-world validation", basis: "Dependency links are explicit in the trace.", status: "verified", confidence: 86, history: ["Parents traversed", "Ablation replayed", "Critical chain marked"] }
   ];
@@ -306,9 +475,11 @@
     "playPause", "timelineClock", "timelineRange", "timelineTicks", "currentAction", "dismissBanner",
     "reviewModal", "reviewModalTitle", "reviewPrompt", "reviewNote", "correctionField", "correctionInput",
     "closeModal", "cancelReview", "saveReview", "toastRegion", "canvasTransform", "systemView",
-    "agentLanesView", "contextMapView", "telemetryView", "synthesisView", "granularityRange",
+    "agentLayerView", "agentLanesView", "contextMapView", "telemetryView", "synthesisView", "granularityRange",
     "granularityTitle", "granularityDescription", "microscopeMode", "synthesisMode", "zoomOut",
-    "zoomIn", "zoomValue", "itemAgent", "itemRecordKind", "itemContext", "itemRelationship", "itemUnavailable"
+    "zoomIn", "zoomValue", "itemAgent", "itemRecordKind", "itemContext", "itemRelationship", "itemUnavailable",
+    "agentProfileBlock", "agentArchitecture", "agentLifecycle", "agentOwner", "agentCurrentTask", "agentAuthority",
+    "agentProhibited", "agentMemory", "agentRuntime", "agentMessages", "agentDependencies", "agentContribution"
   ].map(id => [id, document.getElementById(id)]));
 
   const state = {
@@ -346,7 +517,7 @@
   function findItemById(id) {
     if (!id) return null;
     if (id === alternate.id) return alternate;
-    return [...events, ...contextItems, ...agents, ...telemetryItems, ...synthesisItems]
+    return [...events, ...contextItems, ...agents, ...agentEvents, ...modelComponents, ...telemetryItems, ...synthesisItems]
       .find(item => item.id === id) || null;
   }
 
@@ -361,6 +532,10 @@
     if (latest === "challenged") return "disputed";
     if (latest === "corrected") return "approved";
     return latest;
+  }
+
+  function statusLabel(status) {
+    return String(status || "unknown").replaceAll("-", " ").toUpperCase();
   }
 
   function splitTitle(label, max = 22) {
@@ -463,11 +638,12 @@
   }
 
   const granularityConfig = {
-    1: { title: "System overview", description: "The active objective, participating models, current stage, and emerging direction.", hint: "SELECT A SYSTEM ELEMENT TO INSPECT" },
-    2: { title: "Model level", description: "Who is working, what each model received, and what it contributed.", hint: "SELECT A MODEL OR CONTEXT CHIP TO INSPECT" },
-    3: { title: "Reasoning summary", description: "Source-linked assumptions, interpretations, conflicts, uncertainties, and decisions.", hint: "SELECT A REASONING NODE TO INSPECT" },
-    4: { title: "Evidence level", description: "Received, retrieved, generated, summarized, excluded, redacted, and unavailable context.", hint: "SELECT A CONTEXT RECORD TO INSPECT" },
-    5: { title: "Technical telemetry", description: "Context budgets, latency, model versions, retrieval events, and instrumentation boundaries.", hint: "SELECT A TELEMETRY RECORD TO INSPECT" }
+    1: { title: "System overview", description: "The objective, active agents, current stage, authority state, and emerging direction.", hint: "SELECT A SYSTEM ELEMENT TO INSPECT" },
+    2: { title: "Agent level", description: "Who is acting, how each agent is powered, what authority it has, and what it contributes.", hint: "SELECT AN AGENT, EVENT, MESSAGE, OR TRANSITION" },
+    3: { title: "Model & runtime level", description: "The LLMs, WASM modules, versions, context utilization, and component ownership beneath each agent.", hint: "SELECT A MODEL, MODULE, OR CONTEXT CHIP" },
+    4: { title: "Reasoning summary", description: "Source-linked assumptions, interpretations, conflicts, uncertainties, and decisions.", hint: "SELECT A REASONING NODE TO INSPECT" },
+    5: { title: "Evidence level", description: "Received, retrieved, generated, summarized, excluded, redacted, and unavailable context.", hint: "SELECT A CONTEXT RECORD TO INSPECT" },
+    6: { title: "Technical telemetry", description: "Context budgets, latency, deterministic replay, synthetic aggregate activity, and instrumentation boundaries.", hint: "SELECT A TELEMETRY RECORD TO INSPECT" }
   };
 
   function isAvailableAtStep(item) {
@@ -500,9 +676,9 @@
           <small>Scope · equity · feasibility · reversibility</small>
         </button>
         <button class="system-card" type="button" data-inspect="agent-orchestrator">
-          <span class="system-label">Participating models</span>
-          <strong>${agents.length} bounded model roles</strong>
-          <small>${activeAgents.length} active · ${completedAgents.length} completed</small>
+          <span class="system-label">Participating agents</span>
+          <strong>${agents.length} agents · 3 architectures</strong>
+          <small>${activeAgents.length} active · ${completedAgents.length} completed · LLM / deterministic / hybrid</small>
         </button>
         <button class="system-core" type="button" data-inspect="${current.id}">
           <span><strong>${Math.max(0, state.step + 1)} / ${events.length}</strong><span>events visible</span></span>
@@ -515,46 +691,133 @@
         <button class="system-card" type="button" data-inspect="${direction.id}">
           <span class="system-label">Emerging direction</span>
           <strong>${escapeHTML(direction.title)}</strong>
-          <small>${state.step >= 8 ? "Recommendation formed · human approval pending" : "Still provisional · evidence arriving"}</small>
+          <small>${state.step >= 8 ? "Proposal formed · execution awaits human authorization" : "Still provisional · evidence arriving"}</small>
         </button>
       </div>`;
     wireInspectable(els.systemView);
   }
 
+  function humanAuthorizationState() {
+    const reviews = [...(state.reviews["agt-handoff"] || []), ...(state.reviews.n8 || [])]
+      .sort((a, b) => a.timestamp.localeCompare(b.timestamp));
+    return reviews.length ? reviews[reviews.length - 1].action : "pending";
+  }
+
   function agentRunState(agent) {
+    if (agent.id === "agent-wasm" && wasmReplay.status === "running") return { label: "Executing", className: "active" };
     if (state.step < agent.start) return { label: "Queued", className: "dormant" };
+    if (["agent-orchestrator", "agent-synthesis"].includes(agent.id) && state.step >= 8) {
+      const authorization = humanAuthorizationState();
+      if (authorization === "approved") return { label: "Human approved", className: "complete" };
+      if (authorization === "rejected") return { label: "Action rejected", className: "blocked" };
+      if (["challenged", "corrected"].includes(authorization)) return { label: "Revision required", className: "blocked" };
+      return { label: "Awaiting human", className: "awaiting" };
+    }
     if (state.step > agent.finish) return { label: "Complete", className: "complete" };
-    if (state.playing) return { label: "Processing", className: "active" };
+    if (state.playing) return { label: agent.architecture === "deterministic" ? "Executing" : "Processing", className: "active" };
     return { label: "Paused", className: "active" };
   }
 
-  function renderAgentLanes() {
+  function architectureProcess(agent) {
+    if (agent.architecture === "deterministic") {
+      const replayLabel = wasmReplay.match === true ? "VERIFIED" : wasmReplay.status === "running" ? "EXECUTING" : "READY";
+      return `<div class="architecture-process deterministic-process">
+        <span>INPUT 318, 248</span><i>→</i><span>delta(i32,i32)</span><i>→</i><span>${replayLabel}</span>
+      </div>`;
+    }
+    if (agent.architecture === "hybrid") {
+      return `<div class="architecture-process hybrid-process">
+        <span>LLM interpretation</span><i>→</i><span>Typed contract</span><i>→</i><span>WASM gate</span>
+      </div>`;
+    }
+    return `<div class="architecture-process llm-process">
+      <span>Authorized context</span><i>→</i><span>Summary / selection</span><i>→</i><span>Observable action</span>
+    </div>`;
+  }
+
+  function renderAgentLayer() {
+    const architectureCounts = ["llm", "deterministic", "hybrid"].map(architecture => ({
+      architecture,
+      agents: agents.filter(agent => agent.architecture === architecture)
+    }));
+    const legend = architectureCounts.map(group => `
+      <button class="architecture-key ${group.architecture}" type="button" data-inspect="${group.agents[0].id}">
+        <span>${group.architecture === "llm" ? "LLM" : group.architecture === "deterministic" ? "01" : "H"}</span>
+        <strong>${group.architecture === "llm" ? "LLM-powered" : group.architecture === "deterministic" ? "Deterministic / WASM" : "Hybrid"}</strong>
+        <small>${group.agents.length} agent${group.agents.length === 1 ? "" : "s"}</small>
+      </button>`).join("");
     const lanes = agents.map(agent => {
       const runState = agentRunState(agent);
-      const inputs = agent.contextIds.map(findItemById).filter(item => item && isAvailableAtStep(item));
-      const outputs = agent.contributionIds.map(eventById).filter(item => item && isAvailableAtStep(item));
+      const visibleEvents = agent.eventIds.map(findItemById).filter(item => item && isAvailableAtStep(item));
+      const visibleContext = agent.contextIds.map(findItemById).filter(item => item && isAvailableAtStep(item));
+      const contextMarkup = visibleContext.length ? visibleContext.map(item => `
+        <button class="agent-context-link" type="button" data-inspect="${item.id}" style="--state-color:${contextColor(item)}">
+          <span></span>${escapeHTML(item.title)}
+        </button>`).join("") : `<span class="agent-context-link pending"><span></span>Awaiting authorized context</span>`;
+      const eventMarkup = visibleEvents.length ? visibleEvents.map(item => `
+        <button class="agent-event-chip ${item.status}" type="button" data-inspect="${item.id}">
+          <span>${escapeHTML(item.type)}</span><strong>${escapeHTML(item.title)}</strong><small>${statusLabel(visibleStatus(item))}</small>
+        </button>`).join("") : `<div class="agent-event-chip pending"><span>WAITING</span><strong>Task not active at this moment</strong><small>NO EVENT YET</small></div>`;
+      const action = agent.architecture === "deterministic" ? `
+        <button class="wasm-replay-button" type="button" data-replay-wasm ${wasmReplay.status === "running" ? "disabled" : ""}>
+          ${wasmReplay.status === "running" ? "Executing…" : wasmReplay.runs ? "Replay again" : "Run exact replay"}
+        </button>
+        <small class="replay-result ${wasmReplay.match === true ? "verified" : wasmReplay.error ? "failed" : ""}">${wasmReplay.match === true ? `Output hash matched · ${wasmReplay.elapsedMs} ms` : wasmReplay.error ? "Replay failed · inspect event" : "Same inputs · same module · compare hash"}</small>` : `
+        <button class="agent-inspect-action" type="button" data-inspect="${agent.id}">Inspect authority & context</button>
+        <small>${agent.architecture === "llm" ? "CHAIN-OF-THOUGHT: RESTRICTED" : "HANDOFF BOUNDARY: OBSERVED"}</small>`;
+      return `
+        <article class="agent-runtime-card architecture-${agent.architecture} ${runState.className}" style="--agent-color:${agent.color}">
+          <button class="agent-runtime-identity" type="button" data-inspect="${agent.id}">
+            <span class="agent-avatar">${agent.initials}</span>
+            <span class="agent-name"><strong>${agent.name}</strong><span>${agent.architectureLabel} · ${runState.label}</span></span>
+          </button>
+          <div class="agent-runtime-flow">
+            ${architectureProcess(agent)}
+            <div class="agent-context-stream" aria-label="Authorized context records">${contextMarkup}</div>
+            <div class="agent-event-stream">${eventMarkup}</div>
+          </div>
+          <div class="agent-runtime-actions">
+            <span class="lifecycle-pill ${runState.className}">${runState.label}</span>
+            ${action}
+          </div>
+        </article>`;
+    }).join("");
+    els.agentLayerView.innerHTML = `
+      <div class="architecture-legend">${legend}</div>
+      <div class="agent-runtime-list">${lanes}</div>
+      <div class="agent-boundary-note"><span><strong>LLM:</strong> observable context + source-linked summaries</span><span><strong>Deterministic:</strong> exact state + I/O + replay</span><span><strong>Hybrid:</strong> visible handoff contract</span></div>`;
+    wireInspectable(els.agentLayerView);
+    els.agentLayerView.querySelectorAll("[data-replay-wasm]").forEach(button => button.addEventListener("click", runWasmReplay));
+  }
+
+  function renderModelLanes() {
+    const lanes = modelComponents.map(component => {
+      const runState = agentRunState(component);
+      const inputs = component.contextIds.map(findItemById).filter(item => item && isAvailableAtStep(item));
+      const outputs = component.contributionIds.map(findItemById).filter(item => item && isAvailableAtStep(item));
       const flow = [
         ...inputs.map(item => `<button class="lane-context-chip" type="button" data-inspect="${item.id}" style="--state-color:${contextColor(item)}"><span class="context-state"></span>${escapeHTML(item.title)}</button>`),
         ...(inputs.length && outputs.length ? ["<span class=\"lane-arrow\">→</span>"] : []),
-        ...outputs.map(item => `<button class="lane-context-chip" type="button" data-inspect="${item.id}" style="--state-color:${nodeColors[item.type] || "#8f9db5"}"><span class="context-state"></span>${escapeHTML(item.title)}</button>`)
+        ...outputs.map(item => `<button class="lane-context-chip" type="button" data-inspect="${item.id}" style="--state-color:${nodeColors[item.type] || contextColor(item)}"><span class="context-state"></span>${escapeHTML(item.title)}</button>`)
       ].join("");
+      const allocation = component.tokens === null ? "N/A" : `${component.tokens}%`;
       return `
-        <article class="agent-lane ${runState.className}" style="--agent-color:${agent.color}">
-          <button class="agent-button" type="button" data-inspect="${agent.id}">
-            <span class="agent-avatar">${agent.initials}</span>
-            <span class="agent-name"><strong>${agent.name}</strong><span>${agent.model} · ${runState.label}</span></span>
+        <article class="agent-lane ${runState.className} component-${component.architecture.toLowerCase()}" style="--agent-color:${component.color}">
+          <button class="agent-button" type="button" data-inspect="${component.id}">
+            <span class="agent-avatar">${component.initials}</span>
+            <span class="agent-name"><strong>${component.name}</strong><span>${component.architecture} · ${component.version}</span></span>
           </button>
-          <div class="lane-flow">${flow || "<span class=\"lane-context-chip\">Awaiting authorized context</span>"}</div>
-          <button class="lane-metrics" type="button" data-inspect="tel-context" aria-label="Inspect context utilization">
-            <div><span>Context</span><strong>${agent.tokens}%</strong></div>
-            <div class="mini-track"><span style="width:${agent.tokens}%"></span></div>
-            <small>${agent.latency} ms · ${agent.contributionIds.length} contributions</small>
+          <div class="lane-flow">${flow || "<span class=\"lane-context-chip\">Awaiting authorized input</span>"}</div>
+          <button class="lane-metrics" type="button" data-inspect="${component.tokens === null ? "agt-wasm-replay" : "tel-context"}" aria-label="Inspect runtime telemetry">
+            <div><span>${component.tokens === null ? "Token window" : "Context"}</span><strong>${allocation}</strong></div>
+            <div class="mini-track"><span style="width:${component.tokens || 0}%"></span></div>
+            <small>${component.latency} ms · owner: ${component.ownerAgent}</small>
           </button>
         </article>`;
     }).join("");
     els.agentLanesView.innerHTML = `
       <div class="agent-lanes">${lanes}</div>
-      <div class="lanes-footer"><span>Shared context is copied only when task-relevant.</span><span><strong>Restricted:</strong> private chain-of-thought · protected instructions</span></div>`;
+      <div class="lanes-footer"><span>Components are distinct from the agents that own and govern them.</span><span><strong>Boundary:</strong> LLM private reasoning restricted · WASM state replayable</span></div>`;
     wireInspectable(els.agentLanesView);
   }
 
@@ -586,13 +849,14 @@
   }
 
   function renderTelemetry() {
-    const activationCells = Array.from({ length: 56 }, (_, index) => `<i style="opacity:${.28 + (index % 5) * .06}"></i>`).join("");
-    const tokenRows = agents.map(agent => `<div class="metric-row"><span>${agent.initials} · ${agent.name.split(" ")[0]}</span><span class="metric-track"><i style="width:${agent.tokens}%"></i></span><span>${agent.tokens}%</span></div>`).join("");
+    const activationValues = [18,24,31,29,42,55,61,48,37,44,58,66,71,63,27,33,39,52,68,73,64,51,46,57,62,69,59,43,22,28,36,49,56,67,72,65,53,47,54,61,70,58,19,26,34,45,59,64,69,60,50,41,48,55,63,57];
+    const activationCells = activationValues.map((value, index) => `<i style="--activity:${value}%;opacity:${.28 + value / 125}" title="Synthetic aggregate feature ${index + 1}: ${value}%"></i>`).join("");
+    const tokenRows = agents.filter(agent => agent.architecture !== "deterministic").map(agent => `<div class="metric-row"><span>${agent.initials} · ${agent.name.split(" ")[0]}</span><span class="metric-track"><i style="width:${agent.tokens}%"></i></span><span>${agent.tokens}%</span></div>`).join("");
     const latencyRows = agents.map(agent => `<div class="metric-row"><span>${agent.initials} · ${agent.name.split(" ")[0]}</span><span class="metric-track"><i style="width:${Math.min(100, agent.latency / 18)}%"></i></span><span>${agent.latency}ms</span></div>`).join("");
     els.telemetryView.innerHTML = `
       <div class="telemetry-boundaries">
         <button class="boundary-card" type="button" data-inspect="tel-thought"><span>R</span><span><strong>Private chain-of-thought</strong><small>RESTRICTED · concise observable summaries substituted</small></span></button>
-        <button class="boundary-card" type="button" data-inspect="tel-activation"><span>N/A</span><span><strong>Aggregate neural telemetry</strong><small>NOT INSTRUMENTED · no literal-thought visualization</small></span></button>
+        <button class="boundary-card" type="button" data-inspect="tel-live-neural"><span>N/A</span><span><strong>Live neural telemetry</strong><small>NOT INSTRUMENTED · no live tensor interface</small></span></button>
       </div>
       <div class="telemetry-grid">
         <button class="telemetry-card" type="button" data-inspect="tel-context">
@@ -607,13 +871,105 @@
           <div class="metric-row"><span>Active</span><span class="metric-track"><i style="width:${state.step >= 5 ? 18 : 4}%"></i></span><span>${state.step >= 5 ? "1.4k" : "0.3k"}</span></div>
           <div class="metric-row"><span>Retrieved</span><span class="metric-track"><i style="width:${Math.min(100, Math.max(0, state.step) * 11)}%"></i></span><span>${Math.max(0, state.step - 1)}</span></div>
         </button>
-        <button class="telemetry-card" type="button" data-inspect="tel-activation">
-          <div class="telemetry-card-header"><strong>Activation interface</strong><span class="not-instrumented">NOT INSTRUMENTED</span></div>
-          <div class="activation-grid" aria-hidden="true">${activationCells}</div>
-          <span class="not-instrumented">No tensor data supplied · visualization intentionally disabled</span>
+        <button class="telemetry-card" type="button" data-inspect="tel-adapter">
+          <div class="telemetry-card-header"><strong>Live event integration</strong><span>SCHEMA V1 · READY</span></div>
+          <div class="adapter-flow"><span>ORCHESTRATOR</span><i>→</i><span>VALIDATE</span><i>→</i><span>AGENT LANES</span></div>
+          <span class="telemetry-caveat adapter-ready">window.GlassboxAgentAdapter.ingest(record)</span>
         </button>
+        <button class="telemetry-card synthetic-telemetry" type="button" data-inspect="tel-activation">
+          <div class="telemetry-card-header"><strong>Aggregate activation features</strong><span class="synthetic-label">SIMULATED PACKET</span></div>
+          <div class="activation-grid" aria-hidden="true">${activationCells}</div>
+          <span class="telemetry-caveat">Activity pattern only · no literal thought or proven understanding</span>
+        </button>
+        <article class="telemetry-card telemetry-replay-card">
+          <button class="telemetry-card-title" type="button" data-inspect="agt-wasm-replay"><strong>Deterministic WASM replay</strong><span>${wasmReplay.match ? "HASH MATCH" : wasmReplay.status.toUpperCase()}</span></button>
+          <div class="replay-facts"><span>Module <strong>d3f242ee…b256</strong></span><span>Input <strong>318, 248</strong></span><span>Output <strong>${wasmReplay.deltaTenths ?? "—"}</strong></span></div>
+          <button class="wasm-replay-button" type="button" data-replay-wasm ${wasmReplay.status === "running" ? "disabled" : ""}>${wasmReplay.status === "running" ? "Executing…" : wasmReplay.runs ? "Replay same inputs" : "Run exact replay"}</button>
+        </article>
       </div>`;
     wireInspectable(els.telemetryView);
+    els.telemetryView.querySelectorAll("[data-replay-wasm]").forEach(button => button.addEventListener("click", runWasmReplay));
+  }
+
+  async function sha256Hex(value) {
+    const bytes = value instanceof Uint8Array ? value : new TextEncoder().encode(value);
+    const digest = await crypto.subtle.digest("SHA-256", bytes);
+    return Array.from(new Uint8Array(digest), byte => byte.toString(16).padStart(2, "0")).join("");
+  }
+
+  function resetWasmReplay() {
+    Object.assign(wasmReplay, {
+      status: "ready", runs: 0, elapsedMs: null, deltaTenths: null,
+      relativeChangePercent: null, moduleHash: null, outputHash: null, match: null, error: null
+    });
+    const replayEvent = findItemById("agt-wasm-replay");
+    replayEvent.status = "observed";
+    replayEvent.verification = "Observed fixture · select Run exact replay for deterministic verification; reference output hash ada3f36d…b2b6";
+    replayEvent.transform = "previous_state=READY → current_state=EXECUTING; straight-line delta=before−after; relativeChange=delta/before; next_state=VERIFIED";
+    replayEvent.excerpt = "imports={}; branch_conditions=none; selected_path=straight_line_subtraction; exit=0; output={deltaTenths:70,relativeChangePercent:22}";
+    replayEvent.history = ["Module bytes integrity fixture loaded", "Import set confirmed empty", "Inputs fixed", "Replay available"];
+  }
+
+  async function runWasmReplay(event) {
+    event?.stopPropagation();
+    if (wasmReplay.status === "running") return;
+    stopPlayback();
+    if (state.step < 2) state.step = 2;
+    state.selectedId = "agt-wasm-replay";
+    wasmReplay.status = "running";
+    wasmReplay.error = null;
+    renderAll();
+
+    const moduleBytes = new Uint8Array([
+      0, 97, 115, 109, 1, 0, 0, 0, 1, 7, 1, 96, 2, 127, 127, 1, 127,
+      3, 2, 1, 0, 7, 9, 1, 5, 100, 101, 108, 116, 97, 0, 0, 10, 9, 1,
+      7, 0, 32, 0, 32, 1, 107, 11
+    ]);
+    const replayEvent = findItemById("agt-wasm-replay");
+    const beforeTenths = 318;
+    const afterTenths = 248;
+
+    try {
+      const startedAt = performance.now();
+      const [{ instance }, moduleHash] = await Promise.all([
+        WebAssembly.instantiate(moduleBytes, {}),
+        sha256Hex(moduleBytes)
+      ]);
+      const deltaTenths = instance.exports.delta(beforeTenths, afterTenths);
+      const relativeChangePercent = Number(((deltaTenths / beforeTenths) * 100).toFixed(1));
+      const output = { beforeTenths, afterTenths, deltaTenths, relativeChangePercent };
+      const outputHash = await sha256Hex(JSON.stringify(output));
+      const elapsedMs = Number(Math.max(.01, performance.now() - startedAt).toFixed(2));
+      const match = moduleHash === wasmReplay.expectedModuleHash
+        && outputHash === wasmReplay.expectedOutputHash
+        && deltaTenths === 70
+        && relativeChangePercent === 22;
+
+      Object.assign(wasmReplay, {
+        status: match ? "verified" : "mismatch", runs: wasmReplay.runs + 1, elapsedMs,
+        deltaTenths, relativeChangePercent, moduleHash, outputHash, match,
+        error: match ? null : "Module or output hash did not match the recorded fixture."
+      });
+      replayEvent.status = match ? "deterministically-verified" : "disputed";
+      replayEvent.verification = match
+        ? `Deterministically Verified · module ${moduleHash.slice(0, 12)}… · output ${outputHash.slice(0, 12)}…`
+        : "Not Verified · replay hash mismatch";
+      replayEvent.transform = `READY → EXECUTING → ${match ? "VERIFIED" : "MISMATCH"}; delta=${beforeTenths}−${afterTenths}=${deltaTenths}; relative=${relativeChangePercent}%`;
+      replayEvent.excerpt = `imports={}; branch_conditions=none; selected_path=straight_line_subtraction; exit=0; output={deltaTenths:${deltaTenths},relativeChangePercent:${relativeChangePercent}}; output_sha256=${outputHash}`;
+      replayEvent.history.push(`Replay ${wasmReplay.runs}: exit ${match ? 0 : 1}, ${elapsedMs} ms, output hash ${match ? "matched" : "mismatched"}`);
+      const wasmAgent = findItemById("agent-wasm");
+      wasmAgent.latency = elapsedMs;
+      wasmAgent.memoryActivity = "One import-free, memoryless WebAssembly invocation completed; no persistent writes.";
+      renderAll();
+      toast(match ? "Deterministic replay verified: the output hash matches." : "Replay completed, but its hash did not match.");
+    } catch (error) {
+      Object.assign(wasmReplay, { status: "failed", runs: wasmReplay.runs + 1, match: false, error: error.message });
+      replayEvent.status = "blocked";
+      replayEvent.verification = `Replay failed · ${error.message}`;
+      replayEvent.history.push(`Replay ${wasmReplay.runs}: failed — ${error.message}`);
+      renderAll();
+      toast("WASM replay failed. No result was fabricated; inspect the error record.");
+    }
   }
 
   function renderSynthesis() {
@@ -626,9 +982,9 @@
     }).join("");
     const rows = agents.map(agent => {
       const runState = agentRunState(agent);
-      const efficiency = agent.id === "agent-equity" ? "Qualified" : agent.id === "agent-orchestrator" ? "Delegated" : "Supports";
-      const equity = agent.id === "agent-equity" ? "Challenges" : agent.id === "agent-synthesis" ? "Constrains" : "Observed";
-      const scope = agent.id === "agent-evidence" ? "Pilot" : agent.id === "agent-equity" ? "Not citywide" : agent.id === "agent-synthesis" ? "Bounded pilot" : "Undecided";
+      const efficiency = agent.id === "agent-equity" ? "Qualified" : agent.id === "agent-orchestrator" ? "Delegated" : agent.id === "agent-wasm" ? "Replayed" : "Supports";
+      const equity = agent.id === "agent-equity" ? "Challenges" : agent.id === "agent-synthesis" ? "Constrains" : agent.id === "agent-wasm" ? "No judgment" : "Observed";
+      const scope = agent.id === "agent-evidence" ? "Pilot" : agent.id === "agent-equity" ? "Blocks citywide" : agent.id === "agent-synthesis" ? "Bounded pilot" : agent.id === "agent-wasm" ? "N/A" : "Undecided";
       return `<tr><td><button class="matrix-agent-button" type="button" data-inspect="${agent.id}">${agent.name}</button></td><td><span class="signal" style="--signal:${agent.color}"><i></i>${efficiency}</span></td><td>${equity}</td><td>${scope}</td><td>${runState.label}</td></tr>`;
     }).join("");
     const flow = [
@@ -640,7 +996,7 @@
     }).join("");
     els.synthesisView.innerHTML = `
       <div class="synthesis-status-grid">${statusCards}</div>
-      <div class="synthesis-matrix-wrap"><table class="synthesis-matrix"><thead><tr><th>Model lane</th><th>Efficiency</th><th>Equity</th><th>Preferred scope</th><th>State</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <div class="synthesis-matrix-wrap"><table class="synthesis-matrix"><thead><tr><th>Agent lane</th><th>Efficiency</th><th>Equity</th><th>Scope / gate</th><th>State</th></tr></thead><tbody>${rows}</tbody></table></div>
       <div class="synthesis-flow">${flow}</div>`;
     wireInspectable(els.synthesisView);
   }
@@ -654,34 +1010,35 @@
 
   function renderMicroscope() {
     const config = granularityConfig[state.granularity];
-    els.granularityTitle.textContent = state.canvasMode === "synthesis" ? "Cross-model synthesis" : config.title;
+    els.granularityTitle.textContent = state.canvasMode === "synthesis" ? "Cross-agent synthesis" : config.title;
     els.granularityDescription.textContent = state.canvasMode === "synthesis"
       ? "Agreement, disagreement, duplication, dependencies, and their effect on the answer."
       : config.description;
     els.granularityRange.value = String(state.granularity);
-    els.granularityRange.style.setProperty("--granularity-progress", `${(state.granularity - 1) * 25}%`);
+    els.granularityRange.style.setProperty("--granularity-progress", `${(state.granularity - 1) * 20}%`);
     els.microscopeMode.classList.toggle("active", state.canvasMode === "microscope");
     els.synthesisMode.classList.toggle("active", state.canvasMode === "synthesis");
     els.microscopeMode.setAttribute("aria-pressed", String(state.canvasMode === "microscope"));
     els.synthesisMode.setAttribute("aria-pressed", String(state.canvasMode === "synthesis"));
 
-    [els.systemView, els.agentLanesView, els.evidenceGraph, els.contextMapView, els.telemetryView, els.synthesisView]
+    [els.systemView, els.agentLayerView, els.agentLanesView, els.evidenceGraph, els.contextMapView, els.telemetryView, els.synthesisView]
       .forEach(view => view.hidden = true);
 
     if (state.canvasMode === "synthesis") {
       els.synthesisView.hidden = false;
-      els.graphTitle.textContent = "Cross-model synthesis";
+      els.graphTitle.textContent = "Cross-agent synthesis";
       els.graphStage.dataset.hint = "SELECT A SYNTHESIS SIGNAL TO INSPECT";
       renderSynthesis();
     } else {
-      const viewMap = { 1: els.systemView, 2: els.agentLanesView, 3: els.evidenceGraph, 4: els.contextMapView, 5: els.telemetryView };
+      const viewMap = { 1: els.systemView, 2: els.agentLayerView, 3: els.agentLanesView, 4: els.evidenceGraph, 5: els.contextMapView, 6: els.telemetryView };
       viewMap[state.granularity].hidden = false;
       els.graphTitle.textContent = config.title;
       els.graphStage.dataset.hint = config.hint;
       if (state.granularity === 1) renderSystemView();
-      if (state.granularity === 2) renderAgentLanes();
-      if (state.granularity === 4) renderContextMap();
-      if (state.granularity === 5) renderTelemetry();
+      if (state.granularity === 2) renderAgentLayer();
+      if (state.granularity === 3) renderModelLanes();
+      if (state.granularity === 5) renderContextMap();
+      if (state.granularity === 6) renderTelemetry();
     }
     applyZoom();
   }
@@ -766,6 +1123,7 @@
       els.selectedStatus.textContent = "UNKNOWN";
       els.inspectorEmpty.hidden = false;
       els.inspectorContent.hidden = true;
+      els.agentProfileBlock.hidden = true;
       els.historyList.innerHTML = "";
       els.reviewLog.innerHTML = "<p>No human review recorded for this item.</p>";
       els.reviewCount.textContent = "0";
@@ -776,7 +1134,7 @@
     const reviews = state.reviews[item.id] || [];
     els.inspectorTitle.textContent = item.title;
     els.selectedStatus.className = `status-pill ${status}`;
-    els.selectedStatus.textContent = status.toUpperCase();
+    els.selectedStatus.textContent = statusLabel(status);
     els.inspectorEmpty.hidden = true;
     els.inspectorContent.hidden = false;
     els.itemType.textContent = item.type.toUpperCase();
@@ -786,6 +1144,21 @@
     els.itemSummary.textContent = item.summary;
     els.itemAgent.textContent = item.agent || "Unknown";
     els.itemRecordKind.textContent = item.recordKind || "Human-readable interpretation";
+    const isAgent = item.entityType === "agent";
+    els.agentProfileBlock.hidden = !isAgent;
+    if (isAgent) {
+      els.agentArchitecture.textContent = item.architectureLabel;
+      els.agentLifecycle.textContent = agentRunState(item).label;
+      els.agentOwner.textContent = item.owner;
+      els.agentCurrentTask.textContent = item.currentTask;
+      els.agentAuthority.textContent = item.grantedAuthority;
+      els.agentProhibited.textContent = item.prohibitedActions;
+      els.agentMemory.textContent = item.memoryActivity;
+      els.agentRuntime.textContent = `${item.runtime}. Access: ${item.tools}`;
+      els.agentMessages.textContent = item.messages;
+      els.agentDependencies.textContent = item.dependencies;
+      els.agentContribution.textContent = item.contribution;
+    }
     els.confidenceValue.textContent = `${item.confidence}%`;
     requestAnimationFrame(() => els.confidenceBar.style.width = `${item.confidence}%`);
     els.confidenceBasis.textContent = item.basis;
@@ -862,6 +1235,8 @@
 
   function runTrace() {
     clearInterval(state.timer);
+    resetWasmReplay();
+    state.reviews = {};
     state.playing = false;
     state.hasStarted = true;
     state.demoState = "loading";
@@ -1018,6 +1393,19 @@
       relationships: item.relationship,
       unavailableOrRestricted: item.unavailable,
       excerpt: item.excerpt,
+      agentProfile: item.entityType === "agent" ? {
+        architecture: item.architecture,
+        lifecycle: agentRunState(item).label,
+        owner: item.owner,
+        currentTask: item.currentTask,
+        grantedAuthority: item.grantedAuthority,
+        prohibitedActions: item.prohibitedActions,
+        memoryActivity: item.memoryActivity,
+        runtime: item.runtime,
+        messages: item.messages,
+        dependencies: item.dependencies,
+        contribution: item.contribution
+      } : null,
       reviews: state.reviews[item.id] || []
     }, null, 2);
     if (navigator.clipboard?.writeText) {
@@ -1038,21 +1426,60 @@
   }
 
   function exportAudit() {
+    const availableTraceItems = [...events, ...agentEvents].filter(item => item.step <= state.step);
     const audit = {
-      schema: "glassbox.context-microscope.v2",
+      schema: "glassbox.context-microscope.agent-layer.v3",
       traceId: "GBX-042",
       generatedAt: new Date().toISOString(),
-      disclosure: "Synthetic demonstration. This record contains observable events and concise reasoning summaries, not private chain-of-thought.",
+      disclosure: "Synthetic demonstration. This record contains observable agent events, deterministic execution, context, and concise source-linked summaries—not private chain-of-thought or literal neural thoughts.",
       input: {
         question: els.questionInput.value.trim(),
         sourceUrl: els.sourceInput.value.trim() || null,
         attachments: state.attachments
       },
       playback: { currentStep: state.step, complete: state.step === events.length - 1 },
+      humanAuthorization: { handoffId: "agt-handoff", state: humanAuthorizationState(), executionOccurred: false },
       microscope: { granularity: state.granularity, granularityName: granularityConfig[state.granularity].title, canvasMode: state.canvasMode, zoom: state.zoom },
-      modelLanes: agents.map(agent => ({ id: agent.id, name: agent.name, model: agent.model, role: agent.role, contextUtilizationPercent: agent.tokens, latencyMs: agent.latency, contextIds: agent.contextIds, contributionIds: agent.contributionIds })),
+      agents: agents.map(agent => ({
+        id: agent.id, name: agent.name, architecture: agent.architecture, owner: agent.owner,
+        purpose: agent.purpose, currentTask: agent.currentTask, lifecycle: agentRunState(agent).label,
+        grantedAuthority: agent.grantedAuthority, prohibitedActions: agent.prohibitedActions,
+        instructionsGoalsConstraintsAndSuccess: agent.instructionsGoals, memoryActivity: agent.memoryActivity,
+        runtimeAndTools: agent.runtime, accessibleToolsAndAgents: agent.tools, messages: agent.messages,
+        dependencies: agent.dependencies, contribution: agent.contribution, contextUtilizationPercent: agent.tokens || null,
+        latencyMs: agent.latency, contextIds: agent.contextIds, contributionIds: agent.contributionIds,
+        eventIds: agent.eventIds, humanReviews: state.reviews[agent.id] || []
+      })),
+      agentEvents: agentEvents.filter(item => item.step <= state.step).map(item => ({
+        id: item.id, step: item.step, timestampOffsetSeconds: item.offset, type: item.type,
+        status: visibleStatus(item), producedBy: item.agent, recordKind: item.recordKind,
+        contextUsed: item.context, source: item.source, verification: item.verification,
+        transformation: item.transform, relationships: item.relationship,
+        unavailableOrRestricted: item.unavailable, supportingExcerpt: item.excerpt,
+        history: item.history, humanReviews: state.reviews[item.id] || []
+      })),
+      runtimeComponents: modelComponents.map(component => ({
+        id: component.id, name: component.name, architecture: component.architecture,
+        provider: component.provider, version: component.version, ownerAgent: component.ownerAgent,
+        contextUtilizationPercent: component.tokens, latencyMs: component.latency,
+        contextIds: component.contextIds, contributionIds: component.contributionIds
+      })),
+      deterministicReplay: {
+        module: "triage-delta.wasm", version: "1.0.0", imports: {},
+        expectedModuleSha256: wasmReplay.expectedModuleHash, observedModuleSha256: wasmReplay.moduleHash,
+        inputs: { beforeTenths: 318, afterTenths: 248 }, branchConditions: [],
+        selectedPath: "straight_line_subtraction", previousState: "READY",
+        currentState: wasmReplay.status.toUpperCase(), outputs: wasmReplay.deltaTenths === null ? null : {
+          deltaTenths: wasmReplay.deltaTenths, relativeChangePercent: wasmReplay.relativeChangePercent
+        },
+        expectedOutputSha256: wasmReplay.expectedOutputHash, observedOutputSha256: wasmReplay.outputHash,
+        deterministicMatch: wasmReplay.match, executionTimeMs: wasmReplay.elapsedMs,
+        instructionOrFuelConsumption: "Not Instrumented", exitStatus: wasmReplay.error ? 1 : wasmReplay.runs ? 0 : null,
+        errors: wasmReplay.error, capabilities: ["embedded module instantiation", "integer computation"],
+        prohibitedCapabilities: ["filesystem", "network", "clock import", "randomness", "external memory", "system calls"]
+      },
       visibleContext: contextItems.filter(isAvailableAtStep).map(item => ({ id: item.id, category: item.category, type: item.type, status: visibleStatus(item), title: item.title, producedBy: item.agent, recordKind: item.recordKind, source: item.source, transformation: item.transform, unavailableOrRestricted: item.unavailable })),
-      items: events.filter(item => item.step <= state.step).map(item => ({
+      items: availableTraceItems.map(item => ({
         id: item.id, step: item.step, timestampOffsetSeconds: item.offset, type: item.type,
         status: visibleStatus(item), confidence: item.confidence, summary: item.summary,
         producedBy: item.agent, recordKind: item.recordKind, contextUsed: item.context,
@@ -1062,6 +1489,7 @@
       })),
       edges: edges.filter(edge => edge.step <= state.step),
       synthesis: synthesisItems,
+      telemetry: telemetryItems,
       instrumentationBoundaries: telemetryItems.filter(item => ["restricted", "not instrumented"].includes(item.type)),
       humanReviewLedger: state.reviews,
       unresolved: state.step >= 7 ? ["Seasonal sample", "Peak queue forecast", "Reviewer coverage model"] : [],
@@ -1085,6 +1513,57 @@
     item.textContent = message;
     els.toastRegion.appendChild(item);
     window.setTimeout(() => item.remove(), 3400);
+  }
+
+  function registerObservableAgentAdapter() {
+    const acceptedStatuses = new Set([
+      "observed", "deterministically-verified", "human-readable-interpretation", "inferred",
+      "restricted", "not-instrumented", "unavailable", "blocked", "awaiting-human-authorization"
+    ]);
+    window.GlassboxAgentAdapter = Object.freeze({
+      version: "1.0.0",
+      disclosure: "Observable events only; private chain-of-thought is outside this contract.",
+      architectures: Object.freeze(["llm", "deterministic", "hybrid"]),
+      pause: () => stopPlayback(),
+      ingest(record) {
+        if (!record || typeof record !== "object") throw new TypeError("Agent event must be an object.");
+        if (!/^[A-Za-z0-9_-]{1,64}$/.test(record.id || "")) throw new TypeError("Event id must be 1–64 safe characters.");
+        if (findItemById(record.id)) throw new TypeError(`Event id already exists: ${record.id}`);
+        const owner = agents.find(agent => agent.id === record.agentId);
+        if (!owner) throw new TypeError("agentId must identify a registered agent.");
+        if (!Number.isInteger(record.step) || record.step < 0 || record.step >= events.length) throw new TypeError(`step must be an integer from 0 to ${events.length - 1}.`);
+        const status = String(record.status || "observed").trim().toLowerCase().replace(/\s+/g, "-");
+        if (!acceptedStatuses.has(status)) throw new TypeError(`Unsupported verification status: ${record.status}`);
+        for (const field of ["type", "title", "summary", "source"]) {
+          if (typeof record[field] !== "string" || !record[field].trim()) throw new TypeError(`${field} is required.`);
+        }
+        const suppliedConfidence = Number(record.confidence ?? 100);
+        if (!Number.isFinite(suppliedConfidence)) throw new TypeError("confidence must be a finite number.");
+        const eventRecord = {
+          id: record.id, agentId: owner.id, agent: owner.name, step: record.step,
+          offset: Number.isFinite(record.offset) ? Math.max(0, record.offset) : events[record.step].offset,
+          type: record.type.slice(0, 80), status, confidence: Math.max(0, Math.min(100, suppliedConfidence)),
+          title: record.title.slice(0, 120), summary: record.summary.slice(0, 500),
+          detail: String(record.detail || "Observable event received through the live adapter.").slice(0, 1000),
+          recordKind: String(record.recordKind || "Observed agent event").slice(0, 120),
+          context: String(record.context || "Unavailable").slice(0, 1000), source: record.source.slice(0, 1000),
+          verification: String(record.verification || "Not Verified").slice(0, 1000),
+          transform: String(record.transform || "No transformation supplied").slice(0, 1000),
+          relationship: String(record.relationship || `Produced by ${owner.name}`).slice(0, 1000),
+          excerpt: String(record.excerpt || "Unavailable").slice(0, 2000),
+          unavailable: String(record.unavailable || "Unknown").slice(0, 1000),
+          basis: String(record.basis || "Confidence supplied by the event producer; not independently calibrated.").slice(0, 1000),
+          history: Array.isArray(record.history) ? record.history.slice(0, 20).map(entry => String(entry).slice(0, 300)) : ["Received through GlassboxAgentAdapter", "Schema validation passed"]
+        };
+        agentEvents.push(eventRecord);
+        owner.eventIds.push(eventRecord.id);
+        state.step = Math.max(state.step, eventRecord.step);
+        state.selectedId = eventRecord.id;
+        renderAll();
+        toast(`Live observable event accepted from ${owner.name}.`);
+        return Object.freeze({ accepted: true, id: eventRecord.id, status: eventRecord.status });
+      }
+    });
   }
 
   function wireEvents() {
@@ -1178,6 +1657,7 @@
   function initialize() {
     els.timelineTicks.innerHTML = events.map(() => "<span></span>").join("");
     els.timelineRange.max = String(events.length - 1);
+    registerObservableAgentAdapter();
     wireEvents();
     renderAttachments();
     renderAll();

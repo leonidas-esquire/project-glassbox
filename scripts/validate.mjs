@@ -8,10 +8,11 @@ const requiredFiles = [
   "CONTRIBUTING.md", "CODE_OF_CONDUCT.md", "SECURITY.md", "GOVERNANCE.md",
   "ROADMAP.md", "CHANGELOG.md", "TRADEMARKS.md", "DCO.md",
   "docs/architecture.md", "docs/provenance-model.md", "docs/safety-model.md",
-  "docs/integration.md", "docs/assets/project-glassbox-overview.png",
+  "docs/integration.md", "docs/maintainer/github-launch.md", "docs/assets/project-glassbox-overview.png",
   "docs/assets/project-glassbox-architecture.svg",
   "schemas/observable-agent-event.schema.json", "schemas/audit-record.schema.json",
-  ".github/workflows/ci.yml", ".github/workflows/codeql.yml",
+  ".github/workflows/ci.yml", ".github/workflows/codeql.yml", ".github/workflows/labels.yml",
+  ".github/labels.json",
   ".github/PULL_REQUEST_TEMPLATE.md", ".github/CODEOWNERS",
   "dist/index.html", "dist/styles.css", "dist/app.js"
 ];

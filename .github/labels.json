@@ -1,0 +1,19 @@
+[
+  { "name": "accessibility", "color": "0e8a16", "description": "Keyboard, screen-reader, contrast, motion, or responsive usability" },
+  { "name": "agent-layer", "color": "8c7cff", "description": "Agent identity, architecture, authority, messages, or delegation" },
+  { "name": "blocked", "color": "b60205", "description": "Progress requires an external decision, permission, or dependency" },
+  { "name": "bug", "color": "d73a4a", "description": "Reproducible behavior that is broken or misleading" },
+  { "name": "dependencies", "color": "0366d6", "description": "Dependency or supply-chain maintenance" },
+  { "name": "documentation", "color": "0075ca", "description": "Documentation or developer-experience improvement" },
+  { "name": "enhancement", "color": "a2eeef", "description": "Scoped improvement to existing behavior" },
+  { "name": "good first issue", "color": "7057ff", "description": "Approachable contribution with bounded scope" },
+  { "name": "help wanted", "color": "008672", "description": "Maintainers welcome community help" },
+  { "name": "integration", "color": "1d76db", "description": "Adapters, schemas, event transport, or runtime instrumentation" },
+  { "name": "needs-triage", "color": "ededed", "description": "Awaiting initial maintainer classification" },
+  { "name": "proposal", "color": "d4c5f9", "description": "Change requires design or governance discussion" },
+  { "name": "provenance", "color": "58c9ff", "description": "Sources, transformations, verification, confidence, or audit integrity" },
+  { "name": "research", "color": "5319e7", "description": "Evaluation, benchmark, study, or research question" },
+  { "name": "safety", "color": "ff8e62", "description": "Epistemic, authority, privacy, or human-governance concern" },
+  { "name": "security", "color": "ee0701", "description": "Security hardening or non-sensitive security maintenance" },
+  { "name": "wasm", "color": "ffca6b", "description": "Deterministic sandbox, state transition, hash, or replay" }
+]

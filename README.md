@@ -196,6 +196,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), browse the [roadmap](ROADMAP.md),
 - Founded and product-directed by **Leonidas Esquire Williamson**; see [AUTHORS.md](AUTHORS.md) and [CITATION.cff](CITATION.cff).
 - Security concerns should be reported privately under [SECURITY.md](SECURITY.md).
 - Contributions use the [Developer Certificate of Origin](DCO.md) and project [Code of Conduct](CODE_OF_CONDUCT.md).
+- Repository administrators can use the [GitHub launch and protection checklist](docs/maintainer/github-launch.md).
 
 Project Glassbox is licensed under the [Apache License 2.0](LICENSE), selected to support broad adoption while preserving license and attribution notices and providing an express patent grant. No open-source license can prevent every false authorship claim; the `NOTICE`, citation metadata, authorship file, preserved Git history, and separate [trademark policy](TRADEMARKS.md) establish provenance and protect the official project identity.
 

@@ -1,0 +1,42 @@
+name: Safety concern
+description: Document a non-confidential safety, provenance, authority, or epistemic-boundary concern.
+title: "[Safety]: "
+labels: [safety, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: If the concern is exploitable or contains sensitive information, stop and use private vulnerability reporting instead.
+  - type: textarea
+    id: claim
+    attributes:
+      label: Safety concern
+      description: What behavior, label, omission, or authority path may mislead or harm a user?
+    validations:
+      required: true
+  - type: dropdown
+    id: boundary
+    attributes:
+      label: Primary boundary
+      options:
+        - Private chain-of-thought or neural-telemetry claim
+        - Provenance or evidence integrity
+        - Confidence or verification scope
+        - Restricted or unavailable information
+        - Sandbox or deterministic replay
+        - Human authorization
+        - Privacy or redaction
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: scenario
+    attributes:
+      label: Scenario and impact
+      description: Give a non-sensitive example, affected users, severity, and why existing controls are insufficient.
+    validations:
+      required: true
+  - type: textarea
+    id: mitigation
+    attributes:
+      label: Possible mitigation
+      description: Suggest a label, interface, schema, test, documentation, or control improvement if you have one.

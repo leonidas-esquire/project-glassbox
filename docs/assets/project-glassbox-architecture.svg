@@ -1,0 +1,237 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="1100" viewBox="0 0 1600 1100" role="img" aria-labelledby="title description">
+  <title id="title">Project Glassbox architecture and assurance model</title>
+  <desc id="description">A detailed technical infographic showing observable event sources flowing through an architecture-aware agent layer into provenance, deterministic replay, inspection, human review, and an exportable audit record. It explicitly marks private chain-of-thought as restricted and absent neural telemetry as not instrumented.</desc>
+  <defs>
+    <linearGradient id="background" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#07101c"/>
+      <stop offset="1" stop-color="#10162a"/>
+    </linearGradient>
+    <linearGradient id="agentPanel" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#111d30"/>
+      <stop offset="1" stop-color="#0b1424"/>
+    </linearGradient>
+    <marker id="arrowMint" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#79f2d0"/>
+    </marker>
+    <marker id="arrowBlue" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#58c9ff"/>
+    </marker>
+    <style>
+      .sans{font-family:Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif}
+      .mono{font-family:"SFMono-Regular",Consolas,"Liberation Mono",monospace}
+      .eyebrow{font-size:14px;font-weight:750;letter-spacing:2.3px;fill:#79f2d0}
+      .title{font-size:48px;font-weight:790;letter-spacing:-1.4px;fill:#f5f8ff}
+      .subtitle{font-size:20px;font-weight:450;fill:#aebbd1}
+      .panelTitle{font-size:21px;font-weight:750;fill:#f5f8ff}
+      .cardTitle{font-size:20px;font-weight:760;fill:#f5f8ff}
+      .body{font-size:16px;font-weight:470;fill:#c8d2e3}
+      .small{font-size:14px;font-weight:470;fill:#9fadc4}
+      .micro{font-size:12px;font-weight:650;letter-spacing:.6px;fill:#9fadc4}
+      .pill{font-size:12px;font-weight:760;letter-spacing:.7px}
+      .line{stroke:#34445f;stroke-width:2;fill:none}
+      .flow{stroke:#79f2d0;stroke-width:3;fill:none;marker-end:url(#arrowMint)}
+      .card{fill:url(#agentPanel);stroke:#2a3a55;stroke-width:1.5}
+    </style>
+  </defs>
+
+  <rect width="1600" height="1100" fill="url(#background)"/>
+  <circle cx="1400" cy="80" r="330" fill="#8c7cff" opacity=".045"/>
+  <circle cx="150" cy="1050" r="360" fill="#79f2d0" opacity=".035"/>
+
+  <g class="sans">
+    <text x="64" y="60" class="eyebrow">ARCHITECTURE + ASSURANCE MODEL</text>
+    <text x="64" y="116" class="title">PROJECT GLASSBOX</text>
+    <text x="64" y="151" class="subtitle">Open infrastructure for observable, verifiable, human-governed AI</text>
+
+    <g transform="translate(1060 43)">
+      <rect width="476" height="116" rx="18" fill="#0a1422" stroke="#2a3a55"/>
+      <text x="22" y="28" class="micro">EPISTEMIC BOUNDARY</text>
+      <circle cx="25" cy="53" r="5" fill="#79f2d0"/><text x="39" y="58" class="small">Observable events</text>
+      <circle cx="250" cy="53" r="5" fill="#8c7cff"/><text x="264" y="58" class="small">Labeled interpretation</text>
+      <circle cx="25" cy="84" r="5" fill="#ff8e62"/><text x="39" y="89" class="small">Private reasoning: Restricted</text>
+      <circle cx="250" cy="84" r="5" fill="#ffca6b"/><text x="264" y="89" class="small">Telemetry: if instrumented</text>
+    </g>
+
+    <g>
+      <rect x="64" y="205" width="258" height="648" rx="22" class="card"/>
+      <rect x="64" y="205" width="7" height="648" rx="3.5" fill="#58c9ff"/>
+      <text x="92" y="244" class="micro" fill="#58c9ff">01 · OBSERVE</text>
+      <text x="92" y="279" class="panelTitle">Event sources</text>
+      <text x="92" y="306" class="small">Only permitted, instrumented</text>
+      <text x="92" y="326" class="small">data enters the trace.</text>
+
+      <g transform="translate(88 336)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#58c9ff"/><text x="40" y="31" class="body">User request</text>
+      </g>
+      <g transform="translate(88 400)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#79f2d0"/><text x="40" y="31" class="body">Permitted context</text>
+      </g>
+      <g transform="translate(88 464)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#58c9ff"/><text x="40" y="31" class="body">Retrieved evidence</text>
+      </g>
+      <g transform="translate(88 528)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#79f2d0"/><text x="40" y="31" class="body">Tool results</text>
+      </g>
+      <g transform="translate(88 592)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#8c7cff"/><text x="40" y="31" class="body">Agent messages</text>
+      </g>
+      <g transform="translate(88 656)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#ffca6b"/><text x="40" y="31" class="body">Policy + authority</text>
+      </g>
+      <g transform="translate(88 720)">
+        <rect width="210" height="52" rx="12" fill="#101e32" stroke="#29435c"/>
+        <circle cx="22" cy="26" r="7" fill="#ff8e62"/><text x="40" y="31" class="body">Gaps + redactions</text>
+      </g>
+      <text x="92" y="813" class="small">Received · retrieved · generated</text>
+      <text x="92" y="835" class="small">summarized · excluded · restricted</text>
+    </g>
+
+    <path d="M322 410 C350 410 350 310 380 310" class="flow"/>
+
+    <g>
+      <rect x="380" y="205" width="796" height="648" rx="22" class="card"/>
+      <text x="410" y="244" class="micro">02 · SEPARATE BY ARCHITECTURE</text>
+      <text x="410" y="279" class="panelTitle">Architecture-aware Agent Layer</text>
+      <text x="410" y="306" class="small">One live lane per agent; one accountable owner per observable event.</text>
+
+      <g transform="translate(410 333)">
+        <rect width="736" height="70" rx="15" fill="#0e2030" stroke="#37665f"/>
+        <rect x="16" y="17" width="118" height="36" rx="18" fill="#79f2d0" opacity=".14" stroke="#79f2d0"/>
+        <text x="75" y="40" text-anchor="middle" class="pill" fill="#79f2d0">ORCHESTRATOR</text>
+        <text x="154" y="30" class="body">Scopes the goal · delegates least privilege · enforces gates</text>
+        <text x="154" y="53" class="small">Proposal authority ≠ action authority</text>
+        <rect x="616" y="18" width="100" height="34" rx="17" fill="#ffca6b" opacity=".12" stroke="#ffca6b"/>
+        <text x="666" y="40" text-anchor="middle" class="pill" fill="#ffca6b">HYBRID</text>
+      </g>
+
+      <g transform="translate(410 431)">
+        <rect width="224" height="252" rx="17" fill="#0e1b2e" stroke="#58c9ff" stroke-width="1.5"/>
+        <circle cx="28" cy="31" r="10" fill="#58c9ff"/>
+        <text x="48" y="38" class="cardTitle">LLM agent</text>
+        <text x="20" y="76" class="small">• Authorized context</text>
+        <text x="20" y="102" class="small">• Model + version</text>
+        <text x="20" y="128" class="small">• Tool selection + output</text>
+        <text x="20" y="154" class="small">• Assumptions + uncertainty</text>
+        <text x="20" y="180" class="small">• Source-linked summary</text>
+        <rect x="18" y="204" width="188" height="30" rx="8" fill="#ff8e62" opacity=".11" stroke="#ff8e62"/>
+        <text x="112" y="224" text-anchor="middle" class="pill" fill="#ffb29a">PRIVATE COT · RESTRICTED</text>
+      </g>
+
+      <g transform="translate(666 431)">
+        <rect width="224" height="252" rx="17" fill="#171b28" stroke="#ffca6b" stroke-width="1.5"/>
+        <rect x="19" y="21" width="20" height="20" rx="4" fill="#ffca6b"/>
+        <text x="50" y="38" class="cardTitle">Deterministic</text>
+        <text x="20" y="76" class="small">• Module + SHA-256</text>
+        <text x="20" y="102" class="small">• Exact typed I/O</text>
+        <text x="20" y="128" class="small">• Function + branch</text>
+        <text x="20" y="154" class="small">• State + capabilities</text>
+        <text x="20" y="180" class="small">• Output hash + replay</text>
+        <rect x="18" y="204" width="188" height="30" rx="8" fill="#ffca6b" opacity=".11" stroke="#ffca6b"/>
+        <text x="112" y="224" text-anchor="middle" class="pill" fill="#ffdf91">EXECUTES · NEVER “THINKS”</text>
+      </g>
+
+      <g transform="translate(922 431)">
+        <rect width="224" height="252" rx="17" fill="#15172e" stroke="#8c7cff" stroke-width="1.5"/>
+        <circle cx="26" cy="31" r="9" fill="#8c7cff"/>
+        <rect x="32" y="25" width="14" height="14" rx="3" fill="#ffca6b"/>
+        <text x="56" y="38" class="cardTitle">Hybrid agent</text>
+        <text x="20" y="76" class="small">• LLM proposal</text>
+        <text x="20" y="102" class="small">• Typed handoff contract</text>
+        <text x="20" y="128" class="small">• Deterministic validation</text>
+        <text x="20" y="154" class="small">• Policy + authority gate</text>
+        <text x="20" y="180" class="small">• Component responsibility</text>
+        <rect x="18" y="204" width="188" height="30" rx="8" fill="#8c7cff" opacity=".13" stroke="#8c7cff"/>
+        <text x="112" y="224" text-anchor="middle" class="pill" fill="#c5baff">INTERPRET → VALIDATE</text>
+      </g>
+
+      <path d="M522 403V427" class="line" marker-end="url(#arrowBlue)"/>
+      <path d="M778 403V427" class="line" marker-end="url(#arrowBlue)"/>
+      <path d="M1034 403V427" class="line" marker-end="url(#arrowBlue)"/>
+
+      <g transform="translate(410 714)">
+        <rect width="736" height="108" rx="16" fill="#0b2130" stroke="#3d8275"/>
+        <text x="20" y="29" class="micro" fill="#79f2d0">SHARED OBSERVABLE TRACE</text>
+        <text x="20" y="59" class="cardTitle">Provenance graph + synchronized timeline</text>
+        <text x="20" y="86" class="small">producer · source · context · transformation · relationship · confidence basis · verification · missing data</text>
+        <g transform="translate(584 19)">
+          <circle cx="10" cy="10" r="10" fill="#58c9ff"/><line x1="20" y1="10" x2="52" y2="10" stroke="#79f2d0" stroke-width="3"/>
+          <circle cx="62" cy="10" r="10" fill="#8c7cff"/><line x1="72" y1="10" x2="104" y2="10" stroke="#ffca6b" stroke-width="3"/>
+          <circle cx="114" cy="10" r="10" fill="#ffca6b"/>
+        </g>
+      </g>
+    </g>
+
+    <path d="M1176 745 C1206 745 1206 490 1236 490" class="flow"/>
+
+    <g>
+      <rect x="1236" y="205" width="300" height="648" rx="22" class="card"/>
+      <rect x="1529" y="205" width="7" height="648" rx="3.5" fill="#8c7cff"/>
+      <text x="1264" y="244" class="micro" fill="#8c7cff">03 · INSPECT + GOVERN</text>
+      <text x="1264" y="279" class="panelTitle">Human assurance</text>
+      <text x="1264" y="306" class="small">Every visible item is clickable.</text>
+
+      <g transform="translate(1260 337)">
+        <rect width="252" height="107" rx="14" fill="#101b2d" stroke="#34445f"/>
+        <text x="18" y="28" class="micro">EVIDENCE INSPECTOR</text>
+        <text x="18" y="55" class="body">Trace any claim to source</text>
+        <text x="18" y="80" class="small">See history, gaps, status,</text>
+        <text x="18" y="99" class="small">confidence, and review state.</text>
+      </g>
+      <g transform="translate(1260 462)">
+        <rect width="252" height="107" rx="14" fill="#101b2d" stroke="#34445f"/>
+        <text x="18" y="28" class="micro">CONTRADICTION + UNCERTAINTY</text>
+        <rect x="18" y="47" width="99" height="29" rx="14.5" fill="#ff8e62" opacity=".12" stroke="#ff8e62"/>
+        <text x="67" y="67" text-anchor="middle" class="pill" fill="#ffb29a">DISPUTED</text>
+        <rect x="126" y="47" width="108" height="29" rx="14.5" fill="#ffca6b" opacity=".12" stroke="#ffca6b"/>
+        <text x="180" y="67" text-anchor="middle" class="pill" fill="#ffdf91">UNRESOLVED</text>
+        <text x="18" y="97" class="small">Synthesis never erases either.</text>
+      </g>
+      <g transform="translate(1260 587)">
+        <rect width="252" height="107" rx="14" fill="#101b2d" stroke="#34445f"/>
+        <text x="18" y="28" class="micro">REPLAY + COMPARE</text>
+        <text x="18" y="55" class="body">Pause · step · replay</text>
+        <text x="18" y="80" class="small">Compare agents, paths, values,</text>
+        <text x="18" y="99" class="small">hashes, and dependencies.</text>
+      </g>
+      <g transform="translate(1260 712)">
+        <rect width="252" height="111" rx="14" fill="#10251f" stroke="#79f2d0"/>
+        <text x="18" y="28" class="micro" fill="#79f2d0">HUMAN AUTHORIZATION GATE</text>
+        <text x="18" y="57" class="body">Approve · challenge</text>
+        <text x="18" y="81" class="body">correct · reject</text>
+        <rect x="171" y="73" width="63" height="23" rx="11.5" fill="#ffca6b" opacity=".14"/>
+        <text x="202" y="89" text-anchor="middle" class="pill" fill="#ffdf91">PENDING</text>
+      </g>
+    </g>
+
+    <g transform="translate(64 894)">
+      <rect width="1472" height="146" rx="22" fill="#0a1422" stroke="#2a3a55"/>
+      <text x="26" y="31" class="micro">ZOOM THE SAME TRACE — WITHOUT CHANGING THE CLAIM</text>
+      <g transform="translate(26 51)">
+        <rect width="210" height="45" rx="12" fill="#101f31" stroke="#58c9ff"/><text x="105" y="29" text-anchor="middle" class="pill" fill="#9ee2ff">1 · SYSTEM</text>
+      </g>
+      <g transform="translate(260 51)">
+        <rect width="210" height="45" rx="12" fill="#10241f" stroke="#79f2d0"/><text x="105" y="29" text-anchor="middle" class="pill" fill="#a8ffe7">2 · AGENTS</text>
+      </g>
+      <g transform="translate(494 51)">
+        <rect width="210" height="45" rx="12" fill="#17172d" stroke="#8c7cff"/><text x="105" y="29" text-anchor="middle" class="pill" fill="#c5baff">3 · MODELS</text>
+      </g>
+      <g transform="translate(728 51)">
+        <rect width="210" height="45" rx="12" fill="#17172d" stroke="#8c7cff"/><text x="105" y="29" text-anchor="middle" class="pill" fill="#c5baff">4 · REASONING</text>
+      </g>
+      <g transform="translate(962 51)">
+        <rect width="210" height="45" rx="12" fill="#101f31" stroke="#58c9ff"/><text x="105" y="29" text-anchor="middle" class="pill" fill="#9ee2ff">5 · EVIDENCE</text>
+      </g>
+      <g transform="translate(1196 51)">
+        <rect width="250" height="45" rx="12" fill="#211d16" stroke="#ffca6b"/><text x="125" y="29" text-anchor="middle" class="pill" fill="#ffdf91">6 · TELEMETRY</text>
+      </g>
+      <text x="26" y="124" class="small">Audit export preserves visible records, unavailable information, instrumentation boundaries, deterministic replay, and human review.</text>
+      <text x="1438" y="124" text-anchor="end" class="small" fill="#79f2d0">EVIDENCE + ACTIONS — NOT PRIVATE THOUGHTS</text>
+    </g>
+  </g>
+</svg>

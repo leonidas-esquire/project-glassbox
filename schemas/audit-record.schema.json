@@ -1,0 +1,149 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/leonidas-esquire/project-glassbox/main/schemas/audit-record.schema.json",
+  "title": "Project Glassbox Audit Record",
+  "description": "The export contract for an inspectable Project Glassbox trace.",
+  "type": "object",
+  "required": [
+    "schema",
+    "traceId",
+    "generatedAt",
+    "disclosure",
+    "input",
+    "playback",
+    "humanAuthorization",
+    "microscope",
+    "agents",
+    "agentEvents",
+    "runtimeComponents",
+    "deterministicReplay",
+    "visibleContext",
+    "items",
+    "edges",
+    "synthesis",
+    "telemetry",
+    "instrumentationBoundaries",
+    "humanReviewLedger",
+    "unresolved"
+  ],
+  "properties": {
+    "schema": {
+      "type": "string",
+      "pattern": "^glassbox\\."
+    },
+    "traceId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "disclosure": {
+      "type": "string",
+      "minLength": 1
+    },
+    "input": {
+      "type": "object",
+      "required": ["question", "sourceUrl", "attachments"]
+    },
+    "playback": {
+      "type": "object",
+      "required": ["currentStep", "complete"]
+    },
+    "humanAuthorization": {
+      "type": "object",
+      "required": ["handoffId", "state", "executionOccurred"]
+    },
+    "microscope": {
+      "type": "object",
+      "required": ["granularity", "granularityName", "canvasMode", "zoom"]
+    },
+    "agents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "agentEvents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "runtimeComponents": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "deterministicReplay": {
+      "type": "object",
+      "required": [
+        "module",
+        "version",
+        "inputs",
+        "expectedModuleSha256",
+        "observedModuleSha256",
+        "expectedOutputSha256",
+        "observedOutputSha256",
+        "deterministicMatch",
+        "capabilities",
+        "prohibitedCapabilities"
+      ]
+    },
+    "visibleContext": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "items": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "edges": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["from", "to"]
+      }
+    },
+    "synthesis": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "telemetry": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "instrumentationBoundaries": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/traceEntity" }
+    },
+    "humanReviewLedger": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "array",
+        "items": {
+          "type": "object",
+          "required": ["action", "timestamp"],
+          "properties": {
+            "action": {
+              "enum": ["approved", "challenged", "corrected", "rejected"]
+            },
+            "note": { "type": "string" },
+            "correction": { "type": "string" },
+            "timestamp": { "type": "string", "format": "date-time" }
+          }
+        }
+      }
+    },
+    "unresolved": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "comparison": {
+      "type": ["object", "null"]
+    }
+  },
+  "$defs": {
+    "traceEntity": {
+      "type": "object",
+      "additionalProperties": true
+    }
+  },
+  "additionalProperties": true
+}

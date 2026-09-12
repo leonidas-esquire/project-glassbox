@@ -1,0 +1,50 @@
+name: Bug report
+description: Report reproducible behavior that is broken or misleading.
+title: "[Bug]: "
+labels: [bug, needs-triage]
+body:
+  - type: markdown
+    attributes:
+      value: Thanks for helping make observable AI systems easier to inspect. Do not include secrets, personal data, private prompts, or exploitable security details.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What happened, and what did you expect?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Reproduction steps
+      placeholder: "1. Open…\n2. Select…\n3. Observe…"
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Context Microscope
+        - Agent Layer
+        - Evidence inspector
+        - Timeline or replay
+        - Human review
+        - Audit export or schema
+        - Accessibility or responsive design
+        - Documentation or setup
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Safe supporting evidence
+      description: Add screenshots, console errors, browser and operating-system versions, or a minimal non-sensitive trace.
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Safety check
+      options:
+        - label: This report contains no secret, personal data, private instruction, or unredacted sensitive trace.
+          required: true

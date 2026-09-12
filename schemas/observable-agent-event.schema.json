@@ -1,0 +1,125 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/leonidas-esquire/project-glassbox/main/schemas/observable-agent-event.schema.json",
+  "title": "Project Glassbox Observable Agent Event",
+  "description": "A provider-neutral event containing observable agent activity and explicit epistemic labels. It must not contain private chain-of-thought or concealed instructions.",
+  "type": "object",
+  "required": [
+    "id",
+    "agentId",
+    "step",
+    "type",
+    "status",
+    "title",
+    "summary",
+    "source"
+  ],
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "agentId": {
+      "type": "string",
+      "pattern": "^[A-Za-z0-9_-]{1,64}$"
+    },
+    "step": {
+      "type": "integer",
+      "minimum": 0
+    },
+    "offset": {
+      "type": "number",
+      "minimum": 0,
+      "description": "Seconds from the beginning of the trace."
+    },
+    "timestamp": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "type": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 80
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "observed",
+        "deterministically-verified",
+        "human-readable-interpretation",
+        "inferred",
+        "restricted",
+        "not-instrumented",
+        "unavailable",
+        "blocked",
+        "awaiting-human-authorization"
+      ]
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 100,
+      "description": "The producer-supplied confidence and not an independently calibrated probability unless explicitly documented."
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 120
+    },
+    "summary": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 500
+    },
+    "detail": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "recordKind": {
+      "type": "string",
+      "maxLength": 120
+    },
+    "context": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "source": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 1000
+    },
+    "verification": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "transform": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "relationship": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "excerpt": {
+      "type": "string",
+      "maxLength": 2000
+    },
+    "unavailable": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "basis": {
+      "type": "string",
+      "maxLength": 1000
+    },
+    "history": {
+      "type": "array",
+      "maxItems": 20,
+      "items": {
+        "type": "string",
+        "maxLength": 300
+      }
+    }
+  },
+  "additionalProperties": true
+}

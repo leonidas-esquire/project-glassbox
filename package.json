@@ -1,0 +1,37 @@
+{
+  "name": "project-glassbox",
+  "version": "0.1.0",
+  "description": "Open infrastructure for observable, verifiable, human-governed AI.",
+  "license": "Apache-2.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node scripts/serve.mjs",
+    "start": "node scripts/serve.mjs",
+    "lint": "node --check dist/app.js && node --check scripts/serve.mjs && node --check scripts/validate.mjs",
+    "test": "node --test",
+    "validate": "node scripts/validate.mjs",
+    "check": "npm run lint && npm test && npm run validate",
+    "audit:dependencies": "npm audit --omit=dev"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/leonidas-esquire/project-glassbox.git"
+  },
+  "bugs": {
+    "url": "https://github.com/leonidas-esquire/project-glassbox/issues"
+  },
+  "homepage": "https://glassbox-ai.leonidasesquire.chatgpt.site",
+  "keywords": [
+    "ai-safety",
+    "ai-observability",
+    "ai-governance",
+    "agentic-ai",
+    "provenance",
+    "wasm",
+    "human-in-the-loop"
+  ]
+}

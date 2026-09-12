@@ -1,0 +1,33 @@
+name: Research proposal
+description: Propose an evaluation, study, dataset, benchmark, or research integration.
+title: "[Research]: "
+labels: [research, proposal]
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Research question
+      description: State a falsifiable or decision-relevant question.
+    validations:
+      required: true
+  - type: textarea
+    id: method
+    attributes:
+      label: Proposed method
+      description: Describe participants or data, comparison, measures, analysis, and definition of done.
+    validations:
+      required: true
+  - type: textarea
+    id: ethics
+    attributes:
+      label: Ethics, privacy, and safety
+      description: Address consent, sensitive data, protected model information, foreseeable harms, and required review.
+    validations:
+      required: true
+  - type: textarea
+    id: output
+    attributes:
+      label: Expected public artifact
+      description: What code, protocol, report, fixture, or benchmark can be shared under a compatible license?
+    validations:
+      required: true

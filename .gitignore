@@ -1,0 +1,10 @@
+.DS_Store
+node_modules/
+npm-debug.log*
+*.log
+coverage/
+playwright-report/
+test-results/
+.env
+.env.*
+!.env.example

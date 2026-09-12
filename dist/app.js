@@ -1,3 +1,5 @@
+/* Copyright 2026 eGovernment AI LLC. SPDX-License-Identifier: Apache-2.0 */
+
 (() => {
   "use strict";
 
@@ -1499,7 +1501,7 @@
     const url = URL.createObjectURL(blob);
     const anchor = document.createElement("a");
     anchor.href = url;
-    anchor.download = `glassbox-audit-GBX-042-${new Date().toISOString().slice(0, 10)}.json`;
+    anchor.download = `project-glassbox-audit-GBX-042-${new Date().toISOString().slice(0, 10)}.json`;
     document.body.appendChild(anchor);
     anchor.click();
     anchor.remove();

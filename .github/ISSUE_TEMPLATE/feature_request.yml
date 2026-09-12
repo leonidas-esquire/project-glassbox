@@ -1,0 +1,41 @@
+name: Feature request
+description: Propose a scoped improvement to Project Glassbox.
+title: "[Feature]: "
+labels: [enhancement, needs-triage]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Human problem
+      description: What should a person be able to understand, verify, or govern that they cannot today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful interaction or contract change.
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: Evidence and users
+      description: Who needs this, and what observation, research, or use case supports it?
+  - type: dropdown
+    id: architecture
+    attributes:
+      label: Agent architecture affected
+      multiple: true
+      options:
+        - LLM-powered
+        - Deterministic or WASM
+        - Hybrid
+        - Architecture-neutral
+  - type: textarea
+    id: boundary
+    attributes:
+      label: Epistemic and authority impact
+      description: Could this change affect privacy, provenance, confidence, verification, redaction, or human authorization?
+    validations:
+      required: true

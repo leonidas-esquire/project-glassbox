@@ -1,0 +1,27 @@
+# Changelog
+
+All notable changes to Project Glassbox are documented here. The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and releases aim to follow semantic versioning.
+
+## [Unreleased]
+
+### Added
+
+- Public open-source documentation, governance, security policy, contribution guide, DCO, citation metadata, and brand policy.
+- Machine-readable observable-agent-event and audit-record schemas.
+- Dependency-free local development server, repository validation, automated tests, and CI configuration.
+- Public and developer-focused README visual assets.
+
+### Changed
+
+- Public project identity standardized as **Project Glassbox**.
+
+## [0.1.0] — 2026-09-12
+
+### Added
+
+- Interactive Glassbox AI observability application.
+- Real-time Context Microscope with six granularity levels.
+- Dedicated Agent Layer for LLM, deterministic/WASM, and hybrid agents.
+- Synthetic civic-decision trace with evidence, contradiction, uncertainty, and human authorization.
+- Replayable timeline, comparison mode, evidence inspector, review controls, and audit export.
+- Deterministic browser-side WASM replay and an observable-event integration adapter.

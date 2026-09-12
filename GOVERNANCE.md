@@ -1,6 +1,6 @@
 # Governance
 
-Project Glassbox is an open-source project stewarded by **eGovernment AI LLC**. Its governance is designed to welcome broad participation while protecting the project's epistemic boundaries, security, and public-interest mission.
+Project Glassbox is an open-source project stewarded by **EGOVERNMENT AI LLC**. Its governance is designed to welcome broad participation while protecting the project's epistemic boundaries, security, and public-interest mission.
 
 ## Roles
 

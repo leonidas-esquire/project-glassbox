@@ -1,6 +1,6 @@
 # Project Glassbox trademark and brand policy
 
-The Apache License 2.0 applies to the source code and documentation in this repository. It does not grant rights to the **Project Glassbox** name, word mark, logo, or other source-identifying brand assets, which eGovernment AI LLC claims as its trademarks for this project. No federal registration is represented by this policy.
+The Apache License 2.0 applies to the source code and documentation in this repository. It does not grant rights to the **Project Glassbox** name, word mark, logo, or other source-identifying brand assets, which EGOVERNMENT AI LLC claims as its trademarks for this project. No federal registration is represented by this policy.
 
 ## You may
 

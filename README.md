@@ -26,12 +26,6 @@ Modern AI systems increasingly act through multiple models, tools, agents, memor
 
 Project Glassbox turns those observable system events into a replayable, clickable trace. It is a foundation for AI observability, assurance, audit, governance, and public understanding—not a claim that model internals have become transparent.
 
-## See it live
-
-**[Open the Project Glassbox interactive demonstration](https://glassbox-ai.leonidasesquire.chatgpt.site)**
-
-The current demonstration is deliberately synthetic. It follows a civic decision from the initial question through evidence gathering, a reproducible WASM calculation, an equity challenge, synthesis, and an action that stops for human authorization.
-
 ## What Project Glassbox does
 
 | Capability | What a human can inspect |
@@ -48,6 +42,12 @@ The current demonstration is deliberately synthetic. It follows a civic decision
 | Audit export | A JSON record of visible context, agents, events, telemetry boundaries, replay, and reviews |
 
 Every meaningful interface object is selectable and tied to a structured record.
+
+## See it live
+
+**[Open the Project Glassbox interactive demonstration](https://glassbox-ai.leonidasesquire.chatgpt.site)**
+
+The current demonstration is deliberately synthetic. It follows a civic decision from the initial question through evidence gathering, a reproducible WASM calculation, an equity challenge, synthesis, and an action that stops for human authorization.
 
 ## Three agent architectures, three honest views
 
@@ -192,7 +192,7 @@ Start with [CONTRIBUTING.md](CONTRIBUTING.md), browse the [roadmap](ROADMAP.md),
 
 ## Governance, security, and attribution
 
-- Stewarded by **eGovernment AI LLC** under the governance described in [GOVERNANCE.md](GOVERNANCE.md).
+- Stewarded by **EGOVERNMENT AI LLC** under the governance described in [GOVERNANCE.md](GOVERNANCE.md).
 - Founded and product-directed by **Leonidas Esquire Williamson**; see [AUTHORS.md](AUTHORS.md) and [CITATION.cff](CITATION.cff).
 - Security concerns should be reported privately under [SECURITY.md](SECURITY.md).
 - Contributions use the [Developer Certificate of Origin](DCO.md) and project [Code of Conduct](CODE_OF_CONDUCT.md).

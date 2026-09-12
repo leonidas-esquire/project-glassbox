@@ -10,7 +10,7 @@ Security fixes are applied to the latest release and the current `main` branch. 
 
 Do not open a public issue for a vulnerability, exposed secret, privacy incident, or plausible method of bypassing a human-authorization or provenance boundary.
 
-Use GitHub's private **Report a vulnerability** workflow in the Security tab. If private reporting is unavailable, contact the project steward through [eGovernment AI LLC](https://egovernment.ai) and mark the message “Project Glassbox confidential security report.” Include:
+Use GitHub's private **Report a vulnerability** workflow in the Security tab. If private reporting is unavailable, contact the project steward through [EGOVERNMENT AI LLC](https://egovernment.ai) and mark the message “Project Glassbox confidential security report.” Include:
 
 - A concise description and affected version or commit.
 - Reproduction steps or a minimal proof of concept.
